@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+ 
+<struts>
+
+    <constant name="struts.custom.i18n.resources" value="global" />
+    <constant name="struts.devMode" value="true" />
+	
+    <package name="default" namespace="/" extends="struts-default, json-default">
+        
+        <interceptors>
+            <interceptor class="br.unisc.util.JPAInterceptor" name="jpa"/>
+            <interceptor-stack name="jpaStack">
+                <interceptor-ref name="jpa"/>
+                <interceptor-ref name="params"/>
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="jpaStack"/>
+
+        <action name="">
+            <result name="success" type="redirectAction">
+                <param name="actionName">index</param>
+                <param name="namespace">/</param>
+            </result>
+        </action>
+        <action name="index" method="main" class="br.unisc.action.ConfigurationAction">
+            <result name="success">pages/index.jsp</result>
+        </action>
+        
+        <action name="processGamification" method="processGamification" class="br.unisc.action.ConfigurationAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^dsInfo
+                </param>
+            </result>
+        </action>
+        
+        
+        <!-- DOWNLOADS -->
+        <action name="downloadIndividuos" method="individuo" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^individuoList\[\d+\]\.idIndividuo,
+                    ^individuoList\[\d+\]\.nmIndividuo,
+                    ^individuoList\[\d+\]\.xpAtual,
+                    ^individuoList\[\d+\]\.qtDesafiosConcluidos,
+                    ^individuoList\[\d+\]\.qtMetasConcluidas,
+                    ^individuoList\[\d+\]\.qtEmblemas,
+                    ^individuoList\[\d+\]\.qtItens,
+                    ^individuoList\[\d+\]\.qtVida,
+                    ^individuoList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+        <action name="downloadGrupos" method="grupo" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^grupoList\[\d+\]\.idGrupo,
+                    ^grupoList\[\d+\]\.nmGrupo,
+                    ^grupoList\[\d+\]\.xpAtual,
+                    ^grupoList\[\d+\]\.qtDesafiosConcluidos,
+                    ^grupoList\[\d+\]\.qtMetasContluidas,
+                    ^grupoList\[\d+\]\.qtEmblemas,
+                    ^grupoList\[\d+\]\.qtItens,
+                    ^grupoList\[\d+\]\.vlDinheiro,
+                    ^grupoList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+        <action name="downloadGrupoIndividuo" method="grupoIndividuo" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^grupoIndividuoList\[\d+\]\.idGrupoIndividuo,
+                    ^grupoIndividuoList\[\d+\]\.individuo\.idIndividuo,
+                    ^grupoIndividuoList\[\d+\]\.grupo\.idGrupo,
+                    ^grupoIndividuoList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+        <action name="downloadIndividuoDesafio" method="individuoDesafio" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^individuoAtividadeList\[\d+\]\.idIndividuoDesafio,
+                    ^individuoAtividadeList\[\d+\]\.individuo\.idIndividuo,
+                    ^individuoAtividadeList\[\d+\]\.dtInicio,
+                    ^individuoAtividadeList\[\d+\]\.dtFim,
+                    ^individuoAtividadeList\[\d+\]\.vlAtingido,
+                    ^individuoAtividadeList\[\d+\]\.dtAtingido,
+                    ^individuoAtividadeList\[\d+\]\.sgAtingido,
+                    ^individuoAtividadeList\[\d+\]\.desafio\.idDesafio,
+                    ^individuoAtividadeList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+        <action name="downloadGrupoDesafio" method="grupoDesafio" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^grupoAtividadeList\[\d+\]\.idgrupoDesafio,
+                    ^grupoAtividadeList\[\d+\]\.grupo\.idGrupo,
+                    ^grupoAtividadeList\[\d+\]\.dtInicio,
+                    ^grupoAtividadeList\[\d+\]\.dtFim,
+                    ^grupoAtividadeList\[\d+\]\.vlAtingido,
+                    ^grupoAtividadeList\[\d+\]\.dtAtingido,
+                    ^grupoAtividadeList\[\d+\]\.sgAtingido,
+                    ^grupoAtividadeList\[\d+\]\.desafio\.idDesafio,
+                    ^grupoAtividadeList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+        <action name="downloadDesafios" method="desafio" class="br.unisc.action.DownloadAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^desafioList\[\d+\]\.idDesafio,
+                    ^desafioList\[\d+\]\.nmDesafio,
+                    ^desafioList\[\d+\]\.nrNivelNecessario,
+                    ^desafioList\[\d+\]\.fgAtivo
+                </param>
+            </result>
+            <result name="error" type="json">
+                ^dsMessage
+            </result>
+        </action>
+        
+    </package>
+	
+</struts>
