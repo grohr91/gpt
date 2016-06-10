@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "sys_configuracao")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SysConfiguracao.findAll", query = "SELECT s FROM SysConfiguracao s"),
+    @NamedQuery(name = "SysConfiguracao.findAll", query = "SELECT s FROM SysConfiguracao s ORDER BY s.nmConfiguracao"),
     @NamedQuery(name = "SysConfiguracao.findById", query = "SELECT s FROM SysConfiguracao s WHERE s.id = :id"),
     @NamedQuery(name = "SysConfiguracao.findByNmConfiguracao", query = "SELECT s FROM SysConfiguracao s WHERE s.nmConfiguracao = :nmConfiguracao"),
     @NamedQuery(name = "SysConfiguracao.findBySgTipoImportacao", query = "SELECT s FROM SysConfiguracao s WHERE s.sgTipoImportacao = :sgTipoImportacao"),
@@ -49,6 +49,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SysConfiguracao.findByDsDiretorioArquivos", query = "SELECT s FROM SysConfiguracao s WHERE s.dsDiretorioArquivos = :dsDiretorioArquivos")})
 public class SysConfiguracao implements Serializable {
 
+    public static final int TIPO_IMPORTACAO_BANCO_DE_DADOS = 1;
+    public static final int TIPO_IMPORTACAO_CSV = 2;
+    public static final int TIPO_BD_POSTGRES = 1;
+    public static final int TIPO_BD_MYSQL = 2;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,11 +61,14 @@ public class SysConfiguracao implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
+    @Column(name = "id_identificador")
+    private Integer idIdentificador;
+    @Basic(optional = false)
     @Column(name = "nm_configuracao")
     private String nmConfiguracao;
     @Basic(optional = false)
     @Column(name = "sg_tipo_importacao")
-    private int sgTipoImportacao;
+    private Integer sgTipoImportacao;
     @Column(name = "sg_tipo_bd")
     private Integer sgTipoBd;
     @Column(name = "nr_ip_host")
@@ -77,20 +85,6 @@ public class SysConfiguracao implements Serializable {
     private String cdPass;
     @Column(name = "ds_diretorio_arquivos")
     private String dsDiretorioArquivos;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<SysRegraTabela> sysRegraTabelaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<Grupo> grupoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<Individuo> individuoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<GrupoIndividuo> grupoIndividuoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<IndividuoAtividade> individuoAtividadeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<Desafio> desafioList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
-    private List<GrupoAtividade> grupoAtividadeList;
 
     public SysConfiguracao() {
     }
@@ -99,7 +93,7 @@ public class SysConfiguracao implements Serializable {
         this.id = id;
     }
 
-    public SysConfiguracao(Integer id, String nmConfiguracao, int sgTipoImportacao) {
+    public SysConfiguracao(Integer id, String nmConfiguracao, Integer sgTipoImportacao) {
         this.id = id;
         this.nmConfiguracao = nmConfiguracao;
         this.sgTipoImportacao = sgTipoImportacao;
@@ -121,11 +115,11 @@ public class SysConfiguracao implements Serializable {
         this.nmConfiguracao = nmConfiguracao;
     }
 
-    public int getSgTipoImportacao() {
+    public Integer getSgTipoImportacao() {
         return sgTipoImportacao;
     }
 
-    public void setSgTipoImportacao(int sgTipoImportacao) {
+    public void setSgTipoImportacao(Integer sgTipoImportacao) {
         this.sgTipoImportacao = sgTipoImportacao;
     }
 
@@ -193,14 +187,6 @@ public class SysConfiguracao implements Serializable {
         this.dsDiretorioArquivos = dsDiretorioArquivos;
     }
 
-    @XmlTransient
-    public List<SysRegraTabela> getSysRegraTabelaList() {
-        return sysRegraTabelaList;
-    }
-
-    public void setSysRegraTabelaList(List<SysRegraTabela> sysRegraTabelaList) {
-        this.sysRegraTabelaList = sysRegraTabelaList;
-    }
 
     @Override
     public int hashCode() {
@@ -227,52 +213,13 @@ public class SysConfiguracao implements Serializable {
         return "br.unisc.web.model.SysConfiguracao[ id=" + id + " ]";
     }
 
-    public List<Grupo> getGrupoList() {
-        return grupoList;
+
+    public Integer getIdIdentificador() {
+        return idIdentificador;
     }
 
-    public void setGrupoList(List<Grupo> grupoList) {
-        this.grupoList = grupoList;
-    }
-
-    public List<Individuo> getIndividuoList() {
-        return individuoList;
-    }
-
-    public void setIndividuoList(List<Individuo> individuoList) {
-        this.individuoList = individuoList;
-    }
-
-    public List<GrupoIndividuo> getGrupoIndividuoList() {
-        return grupoIndividuoList;
-    }
-
-    public void setGrupoIndividuoList(List<GrupoIndividuo> grupoIndividuoList) {
-        this.grupoIndividuoList = grupoIndividuoList;
-    }
-
-    public List<IndividuoAtividade> getIndividuoAtividadeList() {
-        return individuoAtividadeList;
-    }
-
-    public void setIndividuoAtividadeList(List<IndividuoAtividade> individuoAtividadeList) {
-        this.individuoAtividadeList = individuoAtividadeList;
-    }
-
-    public List<Desafio> getDesafioList() {
-        return desafioList;
-    }
-
-    public void setDesafioList(List<Desafio> desafioList) {
-        this.desafioList = desafioList;
-    }
-
-    public List<GrupoAtividade> getGrupoAtividadeList() {
-        return grupoAtividadeList;
-    }
-
-    public void setGrupoAtividadeList(List<GrupoAtividade> grupoAtividadeList) {
-        this.grupoAtividadeList = grupoAtividadeList;
+    public void setIdIdentificador(Integer idIdentificador) {
+        this.idIdentificador = idIdentificador;
     }
 
 }

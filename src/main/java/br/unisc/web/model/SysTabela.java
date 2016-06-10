@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "sys_tabela")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SysTabela.findAll", query = "SELECT s FROM SysTabela s"),
+    @NamedQuery(name = "SysTabela.findAll", query = "SELECT s FROM SysTabela s ORDER BY s.nmTabela"),
     @NamedQuery(name = "SysTabela.findById", query = "SELECT s FROM SysTabela s WHERE s.id = :id"),
     @NamedQuery(name = "SysTabela.findByNmTabela", query = "SELECT s FROM SysTabela s WHERE s.nmTabela = :nmTabela")})
 public class SysTabela implements Serializable {

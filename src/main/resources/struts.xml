@@ -25,12 +25,29 @@
                 <param name="namespace">/</param>
             </result>
         </action>
-        <action name="index" method="main" class="br.unisc.action.ConfigurationAction">
+        <action name="index" method="main" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success">pages/index.jsp</result>
+        </action>
+        <action name="main" method="main" class="br.unisc.web.action.ConfigurationAction">
             <result name="success">pages/index.jsp</result>
         </action>
         
-        <action name="processGamification" method="processGamification" class="br.unisc.action.ConfigurationAction">
+        <!--        <action name="processGamification" method="processGamification" class="br.unisc.web.action.ConfigurationAction">
             <result name="success" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^dsInfo
+                </param>
+            </result>
+        </action>-->
+        
+        <action name="salvaConfiguracao" method="salvar" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">main</param>
+                <param name="namespace">/</param>
+                <param name="id">${configuracao.id}</param>
+            </result>
+            <result name="error" type="json">
                 <param name="includeProperties">
                     ^dsMessage,
                     ^dsInfo
@@ -38,9 +55,8 @@
             </result>
         </action>
         
-        
         <!-- DOWNLOADS -->
-        <action name="downloadIndividuos" method="individuo" class="br.unisc.action.DownloadAction">
+        <action name="downloadIndividuos" method="individuo" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^individuoList\[\d+\]\.idIndividuo,
@@ -59,7 +75,7 @@
             </result>
         </action>
         
-        <action name="downloadGrupos" method="grupo" class="br.unisc.action.DownloadAction">
+        <action name="downloadGrupos" method="grupo" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^grupoList\[\d+\]\.idGrupo,
@@ -78,7 +94,7 @@
             </result>
         </action>
         
-        <action name="downloadGrupoIndividuo" method="grupoIndividuo" class="br.unisc.action.DownloadAction">
+        <action name="downloadGrupoIndividuo" method="grupoIndividuo" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^grupoIndividuoList\[\d+\]\.idGrupoIndividuo,
@@ -92,7 +108,7 @@
             </result>
         </action>
         
-        <action name="downloadIndividuoDesafio" method="individuoDesafio" class="br.unisc.action.DownloadAction">
+        <action name="downloadIndividuoDesafio" method="individuoDesafio" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^individuoAtividadeList\[\d+\]\.idIndividuoDesafio,
@@ -111,7 +127,7 @@
             </result>
         </action>
         
-        <action name="downloadGrupoDesafio" method="grupoDesafio" class="br.unisc.action.DownloadAction">
+        <action name="downloadGrupoDesafio" method="grupoDesafio" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^grupoAtividadeList\[\d+\]\.idgrupoDesafio,
@@ -130,7 +146,7 @@
             </result>
         </action>
         
-        <action name="downloadDesafios" method="desafio" class="br.unisc.action.DownloadAction">
+        <action name="downloadDesafios" method="desafio" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^desafioList\[\d+\]\.idDesafio,

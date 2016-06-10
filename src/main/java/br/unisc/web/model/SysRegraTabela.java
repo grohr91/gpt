@@ -34,8 +34,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SysRegraTabela.findById", query = "SELECT s FROM SysRegraTabela s WHERE s.id = :id"),
     @NamedQuery(name = "SysRegraTabela.findByFgImportar", query = "SELECT s FROM SysRegraTabela s WHERE s.fgImportar = :fgImportar"),
     @NamedQuery(name = "SysRegraTabela.findBySgTipoInsercao", query = "SELECT s FROM SysRegraTabela s WHERE s.sgTipoInsercao = :sgTipoInsercao"),
-    @NamedQuery(name = "SysRegraTabela.findBySgTipoRemocao", query = "SELECT s FROM SysRegraTabela s WHERE s.sgTipoRemocao = :sgTipoRemocao")})
+    @NamedQuery(name = "SysRegraTabela.findBySgTipoRemocao", query = "SELECT s FROM SysRegraTabela s WHERE s.sgTipoRemocao = :sgTipoRemocao"),
+    @NamedQuery(name = "SysRegraTabela.findByConfiguracao", query = "SELECT s FROM SysRegraTabela s WHERE s.configuracao.id = :idConfiguracao")
+})
 public class SysRegraTabela implements Serializable {
+
+    public static final int SG_TIPO_INSERCAO_APENAS_INSERIR = 1;
+    public static final int SG_TIPO_INSERCAO_INSERIR_E_ALTERAR = 2;
+    public static final int SG_TIPO_REMOCAO_NAO_SINCRONIZADOS = 1;
+    public static final int SG_TIPO_REMOCAO_NAO_REMOVER = 2;
+    public static final int SG_TIPO_REMOCAO_REGRA_REMOCAO = 3;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -48,10 +56,10 @@ public class SysRegraTabela implements Serializable {
     private boolean fgImportar;
     @Basic(optional = false)
     @Column(name = "sg_tipo_insercao")
-    private int sgTipoInsercao;
+    private Integer sgTipoInsercao;
     @Basic(optional = false)
     @Column(name = "sg_tipo_remocao")
-    private int sgTipoRemocao;
+    private Integer sgTipoRemocao;
     @JoinColumn(name = "id_tabela", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SysTabela tabela;
@@ -68,11 +76,15 @@ public class SysRegraTabela implements Serializable {
         this.id = id;
     }
 
-    public SysRegraTabela(Integer id, boolean fgImportar, int sgTipoInsercao, int sgTipoRemocao) {
+    public SysRegraTabela(Integer id, boolean fgImportar, Integer sgTipoInsercao, Integer sgTipoRemocao) {
         this.id = id;
         this.fgImportar = fgImportar;
         this.sgTipoInsercao = sgTipoInsercao;
         this.sgTipoRemocao = sgTipoRemocao;
+    }
+
+    public SysRegraTabela(SysTabela t) {
+        this.tabela = t;
     }
 
     public Integer getId() {
@@ -91,19 +103,19 @@ public class SysRegraTabela implements Serializable {
         this.fgImportar = fgImportar;
     }
 
-    public int getSgTipoInsercao() {
+    public Integer getSgTipoInsercao() {
         return sgTipoInsercao;
     }
 
-    public void setSgTipoInsercao(int sgTipoInsercao) {
+    public void setSgTipoInsercao(Integer sgTipoInsercao) {
         this.sgTipoInsercao = sgTipoInsercao;
     }
 
-    public int getSgTipoRemocao() {
+    public Integer getSgTipoRemocao() {
         return sgTipoRemocao;
     }
 
-    public void setSgTipoRemocao(int sgTipoRemocao) {
+    public void setSgTipoRemocao(Integer sgTipoRemocao) {
         this.sgTipoRemocao = sgTipoRemocao;
     }
 
