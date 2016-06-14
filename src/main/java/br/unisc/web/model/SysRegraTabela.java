@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SysRegraTabela.findByFgImportar", query = "SELECT s FROM SysRegraTabela s WHERE s.fgImportar = :fgImportar"),
     @NamedQuery(name = "SysRegraTabela.findBySgTipoInsercao", query = "SELECT s FROM SysRegraTabela s WHERE s.sgTipoInsercao = :sgTipoInsercao"),
     @NamedQuery(name = "SysRegraTabela.findBySgTipoRemocao", query = "SELECT s FROM SysRegraTabela s WHERE s.sgTipoRemocao = :sgTipoRemocao"),
-    @NamedQuery(name = "SysRegraTabela.findByConfiguracao", query = "SELECT s FROM SysRegraTabela s WHERE s.configuracao.id = :idConfiguracao")
+    @NamedQuery(name = "SysRegraTabela.findByConfiguracao", query = "SELECT s FROM SysRegraTabela s WHERE s.configuracao.id = :idConfiguracao"),
+    @NamedQuery(name = "SysRegraTabela.findByConfiguracaoAndTabela", query = "SELECT s FROM SysRegraTabela s WHERE s.configuracao.id = :idConfiguracao AND s.tabela.id = :idTabela")
 })
 public class SysRegraTabela implements Serializable {
 

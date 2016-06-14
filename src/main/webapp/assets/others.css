@@ -44,3 +44,20 @@ h4 {
         transform: rotate(359deg);
     }
 }
+
+.painel-regras:before {
+    top: 15px;
+    left: 15px;
+    letter-spacing: 1px;
+}
+.painel-regras-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+}
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

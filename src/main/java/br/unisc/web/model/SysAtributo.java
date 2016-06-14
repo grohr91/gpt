@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "SysAtributo.findAll", query = "SELECT s FROM SysAtributo s"),
     @NamedQuery(name = "SysAtributo.findById", query = "SELECT s FROM SysAtributo s WHERE s.id = :id"),
-    @NamedQuery(name = "SysAtributo.findByNmAtributo", query = "SELECT s FROM SysAtributo s WHERE s.nmAtributo = :nmAtributo")})
+    @NamedQuery(name = "SysAtributo.findByNmAtributo", query = "SELECT s FROM SysAtributo s WHERE s.nmAtributo = :nmAtributo"),
+    @NamedQuery(name = "SysAtributo.findByIdTabela", query = "SELECT s FROM SysAtributo s WHERE s.tabela.id = :idTabela ORDER BY s.nmAtributo")
+})
 public class SysAtributo implements Serializable {
 
     private static final long serialVersionUID = 1L;

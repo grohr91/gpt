@@ -26,7 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "SysTipoAtributoOperacao.findAll", query = "SELECT s FROM SysTipoAtributoOperacao s"),
-    @NamedQuery(name = "SysTipoAtributoOperacao.findById", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.id = :id")})
+    @NamedQuery(name = "SysTipoAtributoOperacao.findById", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.id = :id"),
+    @NamedQuery(name = "SysTipoAtributoOperacao.findByTipoAtributo", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.tipoAtributo.id = :idTipoAtributo")
+})
 public class SysTipoAtributoOperacao implements Serializable {
 
     private static final long serialVersionUID = 1L;

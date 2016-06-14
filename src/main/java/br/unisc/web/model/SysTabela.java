@@ -42,8 +42,6 @@ public class SysTabela implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tabela")
     private List<SysRegraTabela> sysRegraTabelaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tabela")
-    private List<SysRegraFiltro> sysRegraFiltroList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tabela")
     private List<SysAtributo> sysAtributoList;
 
     public SysTabela() {
@@ -81,15 +79,6 @@ public class SysTabela implements Serializable {
 
     public void setSysRegraTabelaList(List<SysRegraTabela> sysRegraTabelaList) {
         this.sysRegraTabelaList = sysRegraTabelaList;
-    }
-
-    @XmlTransient
-    public List<SysRegraFiltro> getSysRegraFiltroList() {
-        return sysRegraFiltroList;
-    }
-
-    public void setSysRegraFiltroList(List<SysRegraFiltro> sysRegraFiltroList) {
-        this.sysRegraFiltroList = sysRegraFiltroList;
     }
 
     @XmlTransient

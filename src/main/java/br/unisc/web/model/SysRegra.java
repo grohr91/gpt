@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SysRegra.findByVlRegra", query = "SELECT s FROM SysRegra s WHERE s.vlRegra = :vlRegra")})
 public class SysRegra implements Serializable {
 
+    public static final int SG_TIPO_REGRA_FILTRO = 1;
+    public static final int SG_TIPO_REGRA_REMOCAO = 2;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,12 +43,12 @@ public class SysRegra implements Serializable {
     @Basic(optional = false)
     @Column(name = "vl_regra")
     private String vlRegra;
+    @Basic(optional = false)
+    @Column(name = "sg_tipo_regra")
+    private Integer sgTipoRegra;
     @JoinColumn(name = "id_regra_tabela", referencedColumnName = "id")
     @ManyToOne
     private SysRegraTabela regraTabela;
-    @JoinColumn(name = "id_regra_filtro", referencedColumnName = "id")
-    @ManyToOne
-    private SysRegraFiltro regraFiltro;
     @JoinColumn(name = "id_operacao", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SysOperacao operacao;
@@ -90,12 +92,12 @@ public class SysRegra implements Serializable {
         this.regraTabela = regraTabela;
     }
 
-    public SysRegraFiltro getRegraFiltro() {
-        return regraFiltro;
+    public Integer getSgTipoRegra() {
+        return sgTipoRegra;
     }
 
-    public void setRegraFiltro(SysRegraFiltro regraFiltro) {
-        this.regraFiltro = regraFiltro;
+    public void setSgTipoRegra(Integer sgTipoRegra) {
+        this.sgTipoRegra = sgTipoRegra;
     }
 
     public SysOperacao getOperacao() {

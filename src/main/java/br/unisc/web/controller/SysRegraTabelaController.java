@@ -20,10 +20,8 @@ public class SysRegraTabelaController {
 
     public List<SysRegraTabela> save(List<SysRegraTabela> objList, SysConfiguracao configuracao) {
         for (SysRegraTabela srt : objList) {
-            if (srt.getFgImportar()) {
-                srt.setConfiguracao(configuracao);
-                srt = save(srt);
-            }
+            srt.setConfiguracao(configuracao);
+            srt = save(srt);
         }
 
         return objList;
@@ -36,10 +34,10 @@ public class SysRegraTabelaController {
         }
 
         if (obj.getSgTipoRemocao() == null) {
-            obj.setSgTipoRemocao(SysRegraTabela.SG_TIPO_REMOCAO_NAO_SINCRONIZADOS);
+            obj.setSgTipoRemocao(SysRegraTabela.SG_TIPO_REMOCAO_NAO_REMOVER);
         }
-        
-        if(obj.getTabela() != null && obj.getTabela().getId() != null) {
+
+        if (obj.getTabela() != null && obj.getTabela().getId() != null) {
             obj.setTabela(em.find(SysTabela.class, obj.getTabela().getId()));
         }
 

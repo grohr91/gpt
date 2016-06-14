@@ -5,12 +5,6 @@
  */
 package br.unisc.web.model;
 
-import br.unisc.core.model.Desafio;
-import br.unisc.core.model.Grupo;
-import br.unisc.core.model.GrupoAtividade;
-import br.unisc.core.model.GrupoIndividuo;
-import br.unisc.core.model.Individuo;
-import br.unisc.core.model.IndividuoAtividade;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -25,7 +19,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -53,7 +46,7 @@ public class SysConfiguracao implements Serializable {
     public static final int TIPO_IMPORTACAO_CSV = 2;
     public static final int TIPO_BD_POSTGRES = 1;
     public static final int TIPO_BD_MYSQL = 2;
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,6 +78,8 @@ public class SysConfiguracao implements Serializable {
     private String cdPass;
     @Column(name = "ds_diretorio_arquivos")
     private String dsDiretorioArquivos;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
+    private List<SysAutomacao> automacaoList;
 
     public SysConfiguracao() {
     }
@@ -187,7 +182,6 @@ public class SysConfiguracao implements Serializable {
         this.dsDiretorioArquivos = dsDiretorioArquivos;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -213,13 +207,20 @@ public class SysConfiguracao implements Serializable {
         return "br.unisc.web.model.SysConfiguracao[ id=" + id + " ]";
     }
 
-
     public Integer getIdIdentificador() {
         return idIdentificador;
     }
 
     public void setIdIdentificador(Integer idIdentificador) {
         this.idIdentificador = idIdentificador;
+    }
+
+    public List<SysAutomacao> getAutomacaoList() {
+        return automacaoList;
+    }
+
+    public void setAutomacaoList(List<SysAutomacao> automacaoList) {
+        this.automacaoList = automacaoList;
     }
 
 }

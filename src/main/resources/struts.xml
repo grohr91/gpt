@@ -55,6 +55,63 @@
             </result>
         </action>
         
+        <action name="carregaNovaRegra" method="carregaNovaRegra" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success">regra.jsp</result>
+        </action>
+        
+        <action name="carregaOperacaoByTipoAtributo" method="carregaOperacaoByTipoAtributo" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^tipoAtributoOperacaoList\[\d+\]\.id,
+                    ^tipoAtributoOperacaoList\[\d+\]\.operacao\.id,
+                    ^tipoAtributoOperacaoList\[\d+\]\.operacao\.nmOperacao,
+                    ^tipoAtributoOperacaoList\[\d+\]\.tipoAtributo\.id,
+                    ^tipoAtributoOperacaoList\[\d+\]\.tipoAtributo\.nmTipoAtributo
+                </param>
+            </result>
+        </action>
+        
+        <action name="carregaAtributosByTabela" method="carregaAtributosByTabela" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^atributoList\[\d+\]\.id,
+                    ^atributoList\[\d+\]\.nmAtributo
+                </param>
+            </result>
+        </action>
+        
+        <action name="salvaRegraTabelaList" method="salvaRegraTabelaList" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">main</param>
+                <param name="namespace">/</param>
+                <param name="id">${configuracao.id}</param>
+            </result>
+            <result name="error" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^dsInfo
+                </param>
+            </result>
+        </action>
+        
+        <action name="salvaRegra" method="salvaRegra" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^regraHtml
+                </param>
+            </result>
+        </action>
+        
+        <action name="excluiRegra" method="excluiRegra" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^dsInfo
+                </param>
+            </result>
+        </action>
+        
         <!-- DOWNLOADS -->
         <action name="downloadIndividuos" method="individuo" class="br.unisc.web.action.DownloadAction">
             <result name="success" type="json">
