@@ -94,6 +94,20 @@
             </result>
         </action>
         
+        <action name="salvaRegraExtracaoList" method="salvaRegraExtracaoList" class="br.unisc.web.action.ConfigurationAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">main</param>
+                <param name="namespace">/</param>
+                <param name="id">${configuracao.id}</param>
+            </result>
+            <result name="error" type="json">
+                <param name="includeProperties">
+                    ^dsMessage,
+                    ^dsInfo
+                </param>
+            </result>
+        </action>
+        
         <action name="salvaRegra" method="salvaRegra" class="br.unisc.web.action.ConfigurationAction">
             <result name="success" type="json">
                 <param name="includeProperties">

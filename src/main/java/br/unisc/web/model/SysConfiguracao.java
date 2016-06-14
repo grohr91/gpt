@@ -80,6 +80,8 @@ public class SysConfiguracao implements Serializable {
     private String dsDiretorioArquivos;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
     private List<SysAutomacao> automacaoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
+    private List<SysRegraExtracao> regraExtracaoList;
 
     public SysConfiguracao() {
     }
@@ -221,6 +223,14 @@ public class SysConfiguracao implements Serializable {
 
     public void setAutomacaoList(List<SysAutomacao> automacaoList) {
         this.automacaoList = automacaoList;
+    }
+
+    public List<SysRegraExtracao> getRegraExtracaoList() {
+        return regraExtracaoList;
+    }
+
+    public void setRegraExtracaoList(List<SysRegraExtracao> regraExtracaoList) {
+        this.regraExtracaoList = regraExtracaoList;
     }
 
 }

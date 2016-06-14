@@ -227,7 +227,6 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                                    <a class="btn btn-default" href="javascript:clearForm('connectionForm');"><i class="glyphicon glyphicon-repeat"></i> Limpar</a>
                                                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar e Configurar Regras</button>
                                                 </div>
                                             </div>
@@ -238,73 +237,172 @@
                         </div>
                         <!-- ---------------- FIM COFIGURAÇÕES GERAIS ---------------- -->
 
-
-                        <!-- ---------------- COFIGURAÇÕES TABELAS ---------------- -->
-                        <div class="col-sm-12" >
-                            <s:form id="regraTabelaForm" namespace="/" action="salvaRegraTabelaList" cssClass="form-horizontal" method="post" theme="simple">
-                                <s:hidden name="configuracao.id"/>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" style="padding: 2px 30px;">
-                                        <h4 class="panel-title">
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#accordionRegrasImportacao" aria-expanded="true" aria-controls="collapseTwo">
-                                                <label style='margin-bottom: 0px; padding-top: 8px; padding-bottom: 7px; cursor: pointer; width: 100%'>
-                                                    <span class="glyphicon glyphicon-cog"></span> Regras de Importação
-                                                </label>
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="accordionRegrasImportacao" class="panel-collapse collapse in" role="tabpane2" aria-labelledby="headingTwo">
-                                        <div class="panel-body">
-                                            <div class="col-sm-2"> <!-- required for floating -->
-                                                <!-- Nav tabs -->
-                                                <ul class="nav nav-tabs tabs-left"><!-- 'tabs-right' for right tabs -->
-                                                    <s:iterator value="regraTabelaList" status="st">
-                                                        <s:if test="id != null">
+                        <s:if test="configuracao.id != null">
+                            <!-- ---------------- COFIGURAÇÕES EXTRAÇÃO ---------------- -->
+                            <div class="col-sm-12" >
+                                <s:form id="regraExtracaoForm" namespace="/" action="salvaRegraExtracaoList" method="post" theme="simple">
+                                    <s:hidden name="configuracao.id"/>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" style="padding: 2px 30px;">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#accordionRegrasExtracao" aria-expanded="true" aria-controls="collapseTwo">
+                                                    <label style='margin-bottom: 0px; padding-top: 8px; padding-bottom: 7px; cursor: pointer; width: 100%'>
+                                                        <span class="glyphicon glyphicon-export"></span> Regras de Extração
+                                                    </label>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="accordionRegrasExtracao" class="panel-collapse collapse in" role="tabpane2" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                                <div class="col-sm-2"> <!-- required for floating -->
+                                                    <!-- Nav tabs -->
+                                                    <ul class="nav nav-tabs tabs-left"><!-- 'tabs-right' for right tabs -->
+                                                        <s:iterator value="regraExtracaoList" status="st">
                                                             <s:if test="%{#st.first == true}">
-                                                                <li class="active"><a href="#<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="tabela.nmTabela"/>"><s:property value="tabela.nmTabela"/></a></li>
+                                                                <li class="active"><a href="#view<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="nmView"/>"><s:property value="nmView"/></a></li>
                                                                 </s:if>
                                                                 <s:else>
-                                                                <li><a href="#<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="tabela.nmTabela"/>"><s:property value="tabela.nmTabela"/></a></li>
+                                                                <li><a href="#view<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="nmView"/>"><s:property value="nmView"/></a></li>
                                                                 </s:else>
-                                                            </s:if>
+                                                            </s:iterator>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-sm-10">
+                                                    <!-- Tab panes -->
+                                                    <div class="tab-content">
+                                                        <s:iterator value="regraExtracaoList" status="st">
+                                                            <s:hidden name="regraExtracaoList[%{#st.index}].id"/>
+                                                            <s:hidden name="regraExtracaoList[%{#st.index}].nmView"/>
+                                                            <s:hidden name="regraExtracaoList[%{#st.index}].configuracao.id"/>
+                                                            <div class="tab-pane" id="view<s:property value="id"/>">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-12 control-label" for="sqlView<s:property value="id"/>"><s:property value="nmView"/>  <a class="btn btn-default btn-sm" href="javascript:alert('<s:property value="dsInfo"/>')" title="<s:property value="dsInfo"/>"><i class="glyphicon glyphicon-info-sign"></i> Informações</a></label>
+                                                                    <div class="col-sm-12">
+                                                                        <s:textarea id="sqlView%{id}"
+                                                                                    name="regraExtracaoList[%{#st.index}].sqlView" 
+                                                                                    cssClass="form-control"
+                                                                                    rows="10"
+                                                                                    placeholder="Select interno da view aqui"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </s:iterator>
-                                                </ul>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-10">
-                                                <!-- Tab panes -->
-                                                <div class="tab-content">
-                                                    <s:iterator value="regraTabelaList" status="st">
-                                                        <s:if test="id != null">
-                                                            <s:hidden name="regraTabelaList[%{#st.index}].id"/>
-                                                            <s:hidden name="regraTabelaList[%{#st.index}].fgImportar"/>
-                                                            <s:hidden name="regraTabelaList[%{#st.index}].tabela.id"/>
-                                                            <s:hidden name="regraTabelaList[%{#st.index}].configuracao.id"/>
-                                                            <div class="tab-pane" id="<s:property value="id"/>">
-                                                                <h4><i class="glyphicon glyphicon-th-list"></i> Tabela: <s:property value="tabela.nmTabela"/></h4><hr style="margin-top: 0px;">
-                                                                <div class="form-group" style="height: 34px;">
-                                                                    <label class="col-sm-2 control-label text-right">Persistência</label>
-                                                                    <div class="col-sm-10">
-                                                                        <s:radio name="regraTabelaList[%{#st.index}].sgTipoInsercao" list="#{'1':'Apenas Inserir','2':'Inserir e Alterar'}" value="sgTipoInsercao" />
-                                                                    </div>
-                                                                </div>
+                                            <div class="panel-footer" style="height: 55px;">
+                                                <div class="col-sm-12 text-right">
+                                                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras de Extração</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </s:form>
+                            </div>
+                            <!-- ---------------- FIM COFIGURAÇÕES EXTRAÇÃO ---------------- -->
 
-                                                                <div class="form-group" style="height: 34px;">
-                                                                    <label class="col-sm-2 control-label text-right">Remoção</label>
-                                                                    <div class="col-sm-10" tabela-id="<s:property value="id"/>" index-id="<s:property value="#st.index"/>">
-                                                                        <s:radio name="regraTabelaList[%{#st.index}].sgTipoRemocao" cssClass="sgTipoRemocao" list="#{'1':'Registros não Sincronizados','2':'Nunca Remover','3':'Configurar Regra'}" value="sgTipoRemocao" />
+                            <!-- ---------------- COFIGURAÇÕES TABELAS ---------------- -->
+                            <div class="col-sm-12" >
+                                <s:form id="regraTabelaForm" namespace="/" action="salvaRegraTabelaList" cssClass="form-horizontal" method="post" theme="simple">
+                                    <s:hidden name="configuracao.id"/>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" style="padding: 2px 30px;">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#accordionRegrasImportacao" aria-expanded="true" aria-controls="collapseTwo">
+                                                    <label style='margin-bottom: 0px; padding-top: 8px; padding-bottom: 7px; cursor: pointer; width: 100%'>
+                                                        <span class="glyphicon glyphicon-import"></span> Regras de Importação
+                                                    </label>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="accordionRegrasImportacao" class="panel-collapse collapse in" role="tabpane2" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                                <div class="col-sm-2"> <!-- required for floating -->
+                                                    <!-- Nav tabs -->
+                                                    <ul class="nav nav-tabs tabs-left"><!-- 'tabs-right' for right tabs -->
+                                                        <s:iterator value="regraTabelaList" status="st">
+                                                            <s:if test="id != null">
+                                                                <s:if test="%{#st.first == true}">
+                                                                    <li class="active"><a href="#<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="tabela.nmTabela"/>"><s:property value="tabela.nmTabela"/></a></li>
+                                                                    </s:if>
+                                                                    <s:else>
+                                                                    <li><a href="#<s:property value="id"/>" data-toggle="tab" class="truncate" title="<s:property value="tabela.nmTabela"/>"><s:property value="tabela.nmTabela"/></a></li>
+                                                                    </s:else>
+                                                                </s:if>
+                                                            </s:iterator>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-sm-10">
+                                                    <!-- Tab panes -->
+                                                    <div class="tab-content">
+                                                        <s:iterator value="regraTabelaList" status="st">
+                                                            <s:if test="id != null">
+                                                                <s:hidden name="regraTabelaList[%{#st.index}].id"/>
+                                                                <s:hidden name="regraTabelaList[%{#st.index}].fgImportar"/>
+                                                                <s:hidden name="regraTabelaList[%{#st.index}].tabela.id"/>
+                                                                <s:hidden name="regraTabelaList[%{#st.index}].configuracao.id"/>
+                                                                <div class="tab-pane" id="<s:property value="id"/>">
+                                                                    <h4><i class="glyphicon glyphicon-th-list"></i> Tabela: <s:property value="tabela.nmTabela"/></h4><hr style="margin-top: 0px;">
+                                                                    <div class="form-group" style="height: 34px;">
+                                                                        <label class="col-sm-2 control-label text-right">Persistência</label>
+                                                                        <div class="col-sm-10">
+                                                                            <s:radio name="regraTabelaList[%{#st.index}].sgTipoInsercao" list="#{'1':'Apenas Inserir','2':'Inserir e Alterar'}" value="sgTipoInsercao" />
+                                                                        </div>
                                                                     </div>
-                                                                </div>
 
-                                                                <div class="col-sm-10 col-sm-offset-2">
-                                                                    <div class="div-regras-remocao"  tabela-id="<s:property value="tabela.id"/>" index-id="<s:property value="#st.index"/>" style="display: none;">
+                                                                    <div class="form-group" style="height: 34px;">
+                                                                        <label class="col-sm-2 control-label text-right">Remoção</label>
+                                                                        <div class="col-sm-10" tabela-id="<s:property value="id"/>" index-id="<s:property value="#st.index"/>">
+                                                                            <s:radio name="regraTabelaList[%{#st.index}].sgTipoRemocao" cssClass="sgTipoRemocao" list="#{'1':'Registros não Sincronizados','2':'Nunca Remover','3':'Configurar Regra'}" value="sgTipoRemocao" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-10 col-sm-offset-2">
+                                                                        <div class="div-regras-remocao"  tabela-id="<s:property value="tabela.id"/>" index-id="<s:property value="#st.index"/>" style="display: none;">
+                                                                            <div class="panel panel-default">
+                                                                                <div class="panel-body painel-regras">
+                                                                                    <div class="painel-regras-titulo">
+                                                                                        Regras de Remoção
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <s:iterator value="sysRegraList" status="st1">
+                                                                                            <s:if test="sgTipoRegra == 2">
+                                                                                                <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
+                                                                                                    <div class="col-md-9">
+                                                                                                        <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
+                                                                                                        <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                        <strong>a/que/de</strong> <s:property value="vlRegra"/>
+                                                                                                    </div>
+                                                                                                    <div class="col-md-3">
+                                                                                                        <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </s:if>
+                                                                                        </s:iterator>
+                                                                                        <s:action var="atributos%{id}" name="carregaNovaRegra" namespace="/" executeResult="true">
+                                                                                            <s:param name="configuracao.id" value="%{configuracao.id}"/>
+                                                                                            <s:param name="tabela.id" value="%{id}"/>
+                                                                                            <s:param name="index" value="%{#st.index}"/>
+                                                                                            <s:param name="regra.sgTipoRegra" value="2"/>
+                                                                                        </s:action>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-sm-12">
+                                                                        <h4><i class="glyphicon glyphicon-filter"></i> Filtro</h4><hr style="margin-top: 0px;">
+                                                                    </div>
+                                                                    <div class="col-sm-10 col-sm-offset-2">
                                                                         <div class="panel panel-default">
                                                                             <div class="panel-body painel-regras">
                                                                                 <div class="painel-regras-titulo">
-                                                                                    Regras de Remoção
+                                                                                    Regras de Filtro
                                                                                 </div>
                                                                                 <div class="row">
                                                                                     <s:iterator value="sysRegraList" status="st1">
-                                                                                        <s:if test="sgTipoRegra == 2">
+                                                                                        <s:if test="sgTipoRegra == 1">
                                                                                             <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                 <div class="col-md-9">
                                                                                                     <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
@@ -321,66 +419,30 @@
                                                                                         <s:param name="configuracao.id" value="%{configuracao.id}"/>
                                                                                         <s:param name="tabela.id" value="%{id}"/>
                                                                                         <s:param name="index" value="%{#st.index}"/>
-                                                                                        <s:param name="regra.sgTipoRegra" value="2"/>
+                                                                                        <s:param name="regra.sgTipoRegra" value="1"/>
                                                                                     </s:action>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
 
-                                                                <div class="col-sm-12">
-                                                                    <h4><i class="glyphicon glyphicon-filter"></i> Filtro</h4><hr style="margin-top: 0px;">
                                                                 </div>
-                                                                <div class="col-sm-10 col-sm-offset-2">
-                                                                    <div class="panel panel-default">
-                                                                        <div class="panel-body painel-regras">
-                                                                            <div class="painel-regras-titulo">
-                                                                                Regras de Filtro
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <s:iterator value="sysRegraList" status="st1">
-                                                                                    <s:if test="sgTipoRegra == 1">
-                                                                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
-                                                                                            <div class="col-md-9">
-                                                                                                <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
-                                                                                                <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
-                                                                                                <strong>a/que/de</strong> <s:property value="vlRegra"/>
-                                                                                            </div>
-                                                                                            <div class="col-md-3">
-                                                                                                <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </s:if>
-                                                                                </s:iterator>
-                                                                                <s:action var="atributos%{id}" name="carregaNovaRegra" namespace="/" executeResult="true">
-                                                                                    <s:param name="configuracao.id" value="%{configuracao.id}"/>
-                                                                                    <s:param name="tabela.id" value="%{id}"/>
-                                                                                    <s:param name="index" value="%{#st.index}"/>
-                                                                                    <s:param name="regra.sgTipoRegra" value="1"/>
-                                                                                </s:action>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </s:if>
-                                                    </s:iterator>
+                                                            </s:if>
+                                                        </s:iterator>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer" style="height: 55px;">
+                                                <div class="col-sm-12 text-right">
+                                                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras de Importação</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel-footer" style="height: 55px;">
-                                        <div class="col-sm-12 text-right">
-                                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </s:form>
-                        </div>
-                        <!-- ---------------- FIM COFIGURAÇÕES TABELAS ---------------- -->
-
+                                </s:form>
+                            </div>
+                            <!-- ---------------- FIM COFIGURAÇÕES TABELAS ---------------- -->
+                        </s:if>
                     </div>
                 </div>
             </div>

@@ -5,12 +5,14 @@ import br.unisc.web.dto.ConnectionDTO;
 import br.unisc.util.EMAware;
 import br.unisc.web.controller.ConfiguracaoController;
 import br.unisc.web.controller.SysAutomacaoController;
+import br.unisc.web.controller.SysRegraExtracaoController;
 import br.unisc.web.controller.SysRegraTabelaController;
 import br.unisc.web.model.SysAtributo;
 import br.unisc.web.model.SysAutomacao;
 import br.unisc.web.model.SysConfiguracao;
 import br.unisc.web.model.SysOperacao;
 import br.unisc.web.model.SysRegra;
+import br.unisc.web.model.SysRegraExtracao;
 import br.unisc.web.model.SysRegraTabela;
 import br.unisc.web.model.SysTabela;
 import br.unisc.web.model.SysTipoAtributo;
@@ -50,6 +52,7 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
     private List<SysRegraTabela> regraTabelaList;
     private List<SysConfiguracao> configuracaoList;
     private List<SysOperacao> operacaoList;
+    private List<SysRegraExtracao> regraExtracaoList;
     private LinkedHashMap<Integer, String> tipoBdList;
     private LinkedHashMap<Integer, String> tipoImportacaoList;
 
@@ -63,6 +66,8 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
                 configuracao = em.find(SysConfiguracao.class, Integer.parseInt(id));
                 automacaoList = em.createNamedQuery("SysAutomacao.findByConfiguracao", SysAutomacao.class)
                         .setParameter("idConfiguracao", Integer.parseInt(id)).getResultList();
+                regraExtracaoList = em.createNamedQuery("SysRegraExtracao.findByConfiguracao", SysRegraExtracao.class)
+                        .setParameter("idConfiguracao", Integer.parseInt(id)).getResultList();
                 regraTabelaList = em.createNamedQuery("SysRegraTabela.findByConfiguracao", SysRegraTabela.class)
                         .setParameter("idConfiguracao", Integer.parseInt(id)).getResultList();
                 for (SysRegraTabela srt : regraTabelaList) {
@@ -72,6 +77,7 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
                 }
             } else {
                 regraTabelaList = new ArrayList<SysRegraTabela>();
+                regraExtracaoList = new ArrayList<SysRegraExtracao>();
                 automacaoList = new ArrayList<SysAutomacao>();
                 for (int i = 1; i <= 7; i++) {
                     automacaoList.add(new SysAutomacao(i, false, null));
@@ -99,6 +105,7 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
             configuracao = new ConfiguracaoController(em).save(configuracao);
             regraTabelaList = new SysRegraTabelaController(em).save(regraTabelaList, configuracao);
             automacaoList = new SysAutomacaoController(em).save(automacaoList, configuracao);
+            regraExtracaoList = new SysRegraExtracaoController(em).save(regraExtracaoList, configuracao);
             em.getTransaction().commit();
             id = configuracao.getId().toString();
         } catch (Exception ex) {
@@ -116,6 +123,23 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
         try {
             em.getTransaction().begin();
             regraTabelaList = new SysRegraTabelaController(em).save(regraTabelaList, configuracao);
+            em.getTransaction().commit();
+            id = configuracao.getId().toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            dsMessage = ex.getMessage();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return ERROR;
+        }
+        return SUCCESS;
+    }
+
+    public String salvaRegraExtracaoList() throws Exception {
+        try {
+            em.getTransaction().begin();
+            regraExtracaoList = new SysRegraExtracaoController(em).save(regraExtracaoList, configuracao);
             em.getTransaction().commit();
             id = configuracao.getId().toString();
         } catch (Exception ex) {
@@ -457,6 +481,14 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
 
     public void setAutomacaoList(List<SysAutomacao> automacaoList) {
         this.automacaoList = automacaoList;
+    }
+
+    public List<SysRegraExtracao> getRegraExtracaoList() {
+        return regraExtracaoList;
+    }
+
+    public void setRegraExtracaoList(List<SysRegraExtracao> regraExtracaoList) {
+        this.regraExtracaoList = regraExtracaoList;
     }
 
 }
