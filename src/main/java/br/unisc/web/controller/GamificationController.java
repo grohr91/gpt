@@ -36,7 +36,7 @@ public class GamificationController {
         int countWrong = 0;
         for (VwIndividuoGrupoDTO ig : individuoGrupoList) {
             try {
-                igc.insertOrUpdate(ig);
+//                igc.insertOrUpdate(ig);
                 countRight++;
             } catch (Exception ex) {
                 countWrong++;

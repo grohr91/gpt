@@ -27,15 +27,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "SysTipoAtributoOperacao.findAll", query = "SELECT s FROM SysTipoAtributoOperacao s"),
     @NamedQuery(name = "SysTipoAtributoOperacao.findById", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.id = :id"),
-    @NamedQuery(name = "SysTipoAtributoOperacao.findByTipoAtributo", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.tipoAtributo.id = :idTipoAtributo")
+    @NamedQuery(name = "SysTipoAtributoOperacao.findByTipoAtributo", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.tipoAtributo.id = :idTipoAtributo"),
+    @NamedQuery(name = "SysTipoAtributoOperacao.findByTipoAtributoAndOperacao", query = "SELECT s FROM SysTipoAtributoOperacao s WHERE s.tipoAtributo.id = :idTipoAtributo AND s.operacao.id = :idOperacao")
 })
 public class SysTipoAtributoOperacao implements Serializable {
 
+    private static final String PALAVRA_RESERVADA = "#VAL#";
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Column(name = "nm_operacao_sql")
+    private String nmOperacaoSql;
     @JoinColumn(name = "id_tipo_atributo", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SysTipoAtributo tipoAtributo;
@@ -97,6 +101,18 @@ public class SysTipoAtributoOperacao implements Serializable {
     @Override
     public String toString() {
         return "br.unisc.web.model.SysTipoAtributoOperacao[ id=" + id + " ]";
+    }
+
+    public String getNmOperacaoSql() {
+        return nmOperacaoSql;
+    }
+
+    public void setNmOperacaoSql(String nmOperacaoSql) {
+        this.nmOperacaoSql = nmOperacaoSql;
+    }
+
+    public String getCondicaoByValor(String vlRegra) {
+        return this.getNmOperacaoSql().replace(PALAVRA_RESERVADA, vlRegra);
     }
 
 }

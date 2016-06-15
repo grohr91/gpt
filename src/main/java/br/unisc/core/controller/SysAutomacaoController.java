@@ -1,9 +1,7 @@
-package br.unisc.web.controller;
+package br.unisc.core.controller;
 
 import br.unisc.web.model.SysAutomacao;
 import br.unisc.web.model.SysConfiguracao;
-import br.unisc.web.model.SysRegraTabela;
-import br.unisc.web.model.SysTabela;
 import java.util.List;
 import javax.persistence.EntityManager;
 

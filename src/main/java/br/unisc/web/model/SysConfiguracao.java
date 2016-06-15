@@ -5,6 +5,7 @@
  */
 package br.unisc.web.model;
 
+import br.unisc.web.dto.ConnectionDTO;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -18,6 +19,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -82,6 +84,9 @@ public class SysConfiguracao implements Serializable {
     private List<SysAutomacao> automacaoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "configuracao")
     private List<SysRegraExtracao> regraExtracaoList;
+
+    @Transient
+    private ConnectionDTO conn;
 
     public SysConfiguracao() {
     }
@@ -231,6 +236,18 @@ public class SysConfiguracao implements Serializable {
 
     public void setRegraExtracaoList(List<SysRegraExtracao> regraExtracaoList) {
         this.regraExtracaoList = regraExtracaoList;
+    }
+
+    public ConnectionDTO getConn() {
+        if (TIPO_IMPORTACAO_BANCO_DE_DADOS == this.sgTipoImportacao
+                && conn == null) {
+            conn = new ConnectionDTO(nrIpHost, nrPort, nmDatabase, nmUser, cdPass, this.sgTipoBd);
+        }
+        return conn;
+    }
+
+    public void setConn(ConnectionDTO conn) {
+        this.conn = conn;
     }
 
 }

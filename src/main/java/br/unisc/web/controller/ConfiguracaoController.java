@@ -4,6 +4,7 @@ import br.unisc.web.model.SysConfiguracao;
 import br.unisc.web.model.SysTipoAtributoOperacao;
 import java.util.List;
 import javax.persistence.EntityManager;
+import org.apache.commons.lang.xwork.StringUtils;
 
 /**
  *
@@ -23,6 +24,12 @@ public class ConfiguracaoController {
             em.flush();
             return obj;
         }
+
+        if (StringUtils.isBlank(obj.getCdPass())) {
+            SysConfiguracao objBD = em.find(SysConfiguracao.class, obj.getId());
+            obj.setCdPass(objBD.getCdPass());
+        }
+
         return em.merge(obj);
     }
 

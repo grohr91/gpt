@@ -1,8 +1,10 @@
-package br.unisc.web.controller;
+package br.unisc.core.controller;
 
 import br.unisc.web.model.SysConfiguracao;
+import br.unisc.web.model.SysRegra;
 import br.unisc.web.model.SysRegraTabela;
 import br.unisc.web.model.SysTabela;
+import br.unisc.web.model.SysTipoAtributoOperacao;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -47,6 +49,23 @@ public class SysRegraTabelaController {
             return obj;
         }
         return em.merge(obj);
+    }
+
+    public String criaWhereByRegraTabela(SysRegraTabela regraTabela, Boolean filtroView) {
+        String where = "";
+        if (regraTabela.getSysRegraList() != null) {
+            for (SysRegra sr : regraTabela.getSysRegraList()) {
+                if (SysRegra.SG_TIPO_REGRA_FILTRO == sr.getSgTipoRegra()
+                        && filtroView.equals(sr.getAtributo().getFgColunaView())) {
+                    SysTipoAtributoOperacao tao = em.createNamedQuery("SysTipoAtributoOperacao.findByTipoAtributoAndOperacao", SysTipoAtributoOperacao.class)
+                            .setParameter("idTipoAtributo", sr.getAtributo().getTipoAtributo().getId())
+                            .setParameter("idOperacao", sr.getOperacao().getId()).getResultList().get(0);
+                    String valor = tao.getCondicaoByValor(sr.getVlRegra());
+                    where += " AND " + sr.getAtributo().getNmAtributo() + " " + valor;
+                }
+            }
+        }
+        return where;
     }
 
 }

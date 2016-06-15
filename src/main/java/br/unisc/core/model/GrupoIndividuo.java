@@ -71,10 +71,17 @@ public class GrupoIndividuo implements Serializable {
         this.dtUltimaAtualizacao = dtUltimaAtualizacao;
     }
 
+    public GrupoIndividuo(Grupo g, Individuo i, boolean fgAtivo) {
+        this.grupo = g;
+        this.individuo = i;
+        this.fgAtivo = fgAtivo;
+    }
+
     public GrupoIndividuo(Grupo g, Individuo i) {
         this.grupo = g;
         this.individuo = i;
     }
+
     public Integer getId() {
         return id;
     }

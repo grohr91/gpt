@@ -102,16 +102,18 @@ function excluiRegra(idRegra) {
     });
 }
 
-//function process() {
-//    $.ajax({
-//        url: $("#url").val() + "/processGamification",
-//        data: $("#connectionForm").serialize(),
-//    }).done(function (data) {
-//        if (data.dsMessage != null && data.dsMessage != "") {
-//            $("#message-div").empty().append(data.dsMessage);
-//        }
-//        if (data.dsInfo != null && data.dsInfo != "") {
-//            $("#message-div").empty().append(data.dsInfo);
-//        }
-//    });
-//}
+function processar(configuracao) {
+    $.ajax({
+        url: $("#url").val() + "/processarImportacao",
+        data: {
+            'id': configuracao
+        }
+    }).done(function (data) {
+        if (data.dsMessage != null && data.dsMessage != "") {
+            $("#message-div").empty().append(data.dsMessage);
+        }
+        if (data.dsInfo != null && data.dsInfo != "") {
+            $("#message-div").empty().append(data.dsInfo);
+        }
+    });
+}

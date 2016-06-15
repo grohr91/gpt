@@ -23,6 +23,15 @@ public class ConnectionDTO implements DatabaseAware {
     private String cdPass;
     private Integer dbType;
 
+    public ConnectionDTO(String nrIp, Integer nrPort, String nmDatabase, String nmUser, String cdPass, Integer dbType) {
+        this.nrIp = nrIp;
+        this.nrPort = nrPort;
+        this.nmDatabase = nmDatabase;
+        this.nmUser = nmUser;
+        this.cdPass = cdPass;
+        this.dbType = dbType;
+    }
+
     public String getNrIp() {
         return nrIp;
     }

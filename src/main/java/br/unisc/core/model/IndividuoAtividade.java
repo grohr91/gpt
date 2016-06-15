@@ -58,6 +58,13 @@ public class IndividuoAtividade implements Serializable {
     private Date dtAtingido;
     @Column(name = "sg_atingido")
     private String sgAtingido;
+    @Column(name = "vl_planejado")
+    private Float vlPlanejado;
+    @Column(name = "dt_planejado")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dtPlanejado;
+    @Column(name = "sg_planejado")
+    private String sgPlanejado;
     @Basic(optional = false)
     @Column(name = "fg_ativo")
     private boolean fgAtivo;
@@ -204,6 +211,30 @@ public class IndividuoAtividade implements Serializable {
     @Override
     public String toString() {
         return "br.unisc.core.model.IndividuoAtividade[ id=" + id + " ]";
+    }
+
+    public Float getVlPlanejado() {
+        return vlPlanejado;
+    }
+
+    public void setVlPlanejado(Float vlPlanejado) {
+        this.vlPlanejado = vlPlanejado;
+    }
+
+    public Date getDtPlanejado() {
+        return dtPlanejado;
+    }
+
+    public void setDtPlanejado(Date dtPlanejado) {
+        this.dtPlanejado = dtPlanejado;
+    }
+
+    public String getSgPlanejado() {
+        return sgPlanejado;
+    }
+
+    public void setSgPlanejado(String sgPlanejado) {
+        this.sgPlanejado = sgPlanejado;
     }
 
 }

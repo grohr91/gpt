@@ -32,14 +32,14 @@
             <result name="success">pages/index.jsp</result>
         </action>
         
-        <!--        <action name="processGamification" method="processGamification" class="br.unisc.web.action.ConfigurationAction">
+        <action name="processarImportacao" method="processarImportacao" class="br.unisc.web.action.ConfigurationAction">
             <result name="success" type="json">
                 <param name="includeProperties">
                     ^dsMessage,
                     ^dsInfo
                 </param>
             </result>
-        </action>-->
+        </action>
         
         <action name="salvaConfiguracao" method="salvar" class="br.unisc.web.action.ConfigurationAction">
             <result name="success" type="redirectAction">

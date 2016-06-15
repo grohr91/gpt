@@ -104,10 +104,11 @@ public class Grupo implements Serializable {
         this.nmGrupo = nmGrupo;
     }
 
-    public Grupo(Integer idGrupo, String nmGrupo, Boolean fgAtivo) {
-        this.id = idGrupo;
+    public Grupo(Integer idExterno, String nmGrupo, Boolean fgAtivo) {
+        this.idExterno = idExterno;
         this.nmGrupo = nmGrupo;
         this.fgAtivo = fgAtivo;
+        this.dtUltimaAtualizacao = new Date();
     }
 
     public Grupo(Integer id, String nmGrupo, boolean fgAtivo, Date dtUltimaAtualizacao) {

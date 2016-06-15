@@ -44,6 +44,9 @@ public class SysAtributo implements Serializable {
     @Basic(optional = false)
     @Column(name = "nm_atributo")
     private String nmAtributo;
+    @Basic(optional = false)
+    @Column(name = "fg_coluna_view")
+    private Boolean fgColunaView;
     @JoinColumn(name = "id_tipo_atributo", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SysTipoAtributo tipoAtributo;
@@ -129,6 +132,14 @@ public class SysAtributo implements Serializable {
     @Override
     public String toString() {
         return "br.unisc.web.model.SysAtributo[ id=" + id + " ]";
+    }
+
+    public Boolean getFgColunaView() {
+        return fgColunaView;
+    }
+
+    public void setFgColunaView(Boolean fgColunaView) {
+        this.fgColunaView = fgColunaView;
     }
 
 }

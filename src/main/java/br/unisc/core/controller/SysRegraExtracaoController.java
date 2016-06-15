@@ -1,4 +1,4 @@
-package br.unisc.web.controller;
+package br.unisc.core.controller;
 
 import br.unisc.web.model.SysConfiguracao;
 import br.unisc.web.model.SysRegraExtracao;
@@ -19,6 +19,11 @@ public class SysRegraExtracaoController {
     }
 
     public List<SysRegraExtracao> save(List<SysRegraExtracao> objList, SysConfiguracao configuracao) {
+        if (objList == null || objList.isEmpty()) {
+            objList = em.createNamedQuery("SysRegraExtracao.findByConfiguracao", SysRegraExtracao.class)
+                    .setParameter("idConfiguracao", configuracao.getId()).getResultList();
+        }
+
         if (objList == null || objList.isEmpty()) {
             objList = criaRegrasExtracao(configuracao);
         } else {

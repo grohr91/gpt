@@ -20,7 +20,16 @@
 
     <label class="col-md-1 control-label" style="padding-top: 3px;">a/de</label>
     <div class="col-md-2">
-        <input type="text" class="form-control input-sm vl-regra"/>
+        <s:if test="tabela.nmTabela == 'desafio'">
+            <s:select list="desafioList"
+                      listKey="nmDesafio"
+                      listValue="nmDesafio"
+                      cssClass="form-control input-sm vl-regra"
+                      emptyOption="true"
+                      />
+        </s:if><s:else>
+            <input type="text" class="form-control input-sm vl-regra"/>
+        </s:else>
     </div>
     <div class="col-md-3">
         <a class="btn btn-sm btn-default" href="javascript:adicionarRegra(<s:property value="tabela.id"/>, <s:property value="index"/>, <s:property value="regra.sgTipoRegra"/>, <s:property value="regraTabela.id"/>, this);"><i class="glyphicon glyphicon-plus"></i> Adicionar Regra</a>

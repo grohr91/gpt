@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "desafio")
 @NamedQueries({
-    @NamedQuery(name = "Desafio.findAll", query = "SELECT d FROM Desafio d"),
+    @NamedQuery(name = "Desafio.findAll", query = "SELECT d FROM Desafio d ORDER BY d.nmDesafio"),
     @NamedQuery(name = "Desafio.findById", query = "SELECT d FROM Desafio d WHERE d.id = :id"),
     @NamedQuery(name = "Desafio.findByIdExterno", query = "SELECT d FROM Desafio d WHERE d.idExterno = :idExterno"),
     @NamedQuery(name = "Desafio.findByNmDesafio", query = "SELECT d FROM Desafio d WHERE d.nmDesafio = :nmDesafio"),

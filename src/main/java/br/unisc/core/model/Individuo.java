@@ -114,10 +114,11 @@ public class Individuo implements Serializable {
         this.nmIndividuo = nmIndividuo;
     }
 
-    public Individuo(Integer idIndividuo, String nmIndividuo, Boolean fgAtivo) {
-        this.id = idIndividuo;
+    public Individuo(Integer idExterno, String nmIndividuo, Boolean fgAtivo) {
+        this.idExterno = idExterno;
         this.nmIndividuo = nmIndividuo;
         this.fgAtivo = fgAtivo;
+        this.dtUltimaAtualizacao = new Date();
     }
 
     public Individuo(Integer id, int idExterno, String nmIndividuo, boolean fgAtivo, Date dtUltimaAtualizacao) {

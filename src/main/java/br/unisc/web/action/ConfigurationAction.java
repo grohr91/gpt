@@ -1,12 +1,14 @@
 package br.unisc.web.action;
 
+import br.unisc.core.controller.ImportacaoController;
+import br.unisc.core.model.Desafio;
 import br.unisc.web.controller.GamificationController;
 import br.unisc.web.dto.ConnectionDTO;
 import br.unisc.util.EMAware;
 import br.unisc.web.controller.ConfiguracaoController;
-import br.unisc.web.controller.SysAutomacaoController;
-import br.unisc.web.controller.SysRegraExtracaoController;
-import br.unisc.web.controller.SysRegraTabelaController;
+import br.unisc.core.controller.SysAutomacaoController;
+import br.unisc.core.controller.SysRegraExtracaoController;
+import br.unisc.core.controller.SysRegraTabelaController;
 import br.unisc.web.model.SysAtributo;
 import br.unisc.web.model.SysAutomacao;
 import br.unisc.web.model.SysConfiguracao;
@@ -53,6 +55,7 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
     private List<SysConfiguracao> configuracaoList;
     private List<SysOperacao> operacaoList;
     private List<SysRegraExtracao> regraExtracaoList;
+    private List<Desafio> desafioList;
     private LinkedHashMap<Integer, String> tipoBdList;
     private LinkedHashMap<Integer, String> tipoImportacaoList;
 
@@ -175,6 +178,11 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
             regraTabela = em.createNamedQuery("SysRegraTabela.findByConfiguracaoAndTabela", SysRegraTabela.class)
                     .setParameter("idConfiguracao", configuracao.getId())
                     .setParameter("idTabela", tabela.getId()).getResultList().get(0);
+
+            tabela = em.find(SysTabela.class, tabela.getId());
+            if ("desafio".equals(tabela.getNmTabela())) {
+                desafioList = em.createNamedQuery("Desafio.findAll", Desafio.class).getResultList();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             dsMessage = ex.getMessage();
@@ -182,6 +190,8 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
                 em.getTransaction().rollback();
             }
             atributoList = new ArrayList<SysAtributo>();
+            desafioList = new ArrayList<Desafio>();
+            tipoAtributoOperacaoList = new ArrayList<SysTipoAtributoOperacao>();
         }
         return SUCCESS;
     }
@@ -191,13 +201,15 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
             em.getTransaction().begin();
             em.persist(regra);
             em.getTransaction().commit();
+            SysAtributo sa = em.find(SysAtributo.class, regra.getAtributo().getId());
+            SysOperacao so = em.find(SysOperacao.class, regra.getOperacao().getId());
             regraHtml = "<div style='padding-bottom: 10px; padding-top: 10px;' class='div-regra' regra-id='" + regra.getId() + "'>"
                     + "<div class=\"col-md-9\">\n"
                     + "<i class=\"glyphicon glyphicon-asterisk\"></i> <strong>Quando</strong> "
-                    + regra.getAtributo().getNmAtributo()
+                    + sa.getNmAtributo()
                     + " <strong>for</strong> "
-                    + regra.getOperacao().getNmOperacao()
-                    + " <strong>a/que/de</strong> null "
+                    + so.getNmOperacao()
+                    + " <strong>a/que/de</strong> " + regra.getVlRegra()
                     + "</div>"
                     + "<div class=\"col-md-3\"> "
                     + "<a class=\"btn btn-xs btn-default\" href=\"javascript:excluiRegra("
@@ -244,57 +256,48 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
         return SUCCESS;
     }
 
-    public String processGamification() {
+    public String processarImportacao() {
         try {
-            if (validConnection()) {
-                em.getTransaction().begin();
-                connection.open();
-                GamificationController gc = new GamificationController(em, connection);
-                dsInfo = "";
-                dsInfo += gc.processVwIndividuoGrupo();
-                dsInfo += "\n\n" + gc.processVwIndividuoAtividade();
-                dsInfo += "\n\n" + gc.processVwGrupoAtividade();
-                em.getTransaction().commit();
-                connection.close();
+            configuracao = em.find(SysConfiguracao.class, Integer.parseInt(id));
+            if (SysConfiguracao.TIPO_IMPORTACAO_BANCO_DE_DADOS == configuracao.getSgTipoImportacao()) {
+                testConnection();
+                if (StringUtils.isNotBlank(dsMessage)) {
+                    return SUCCESS;
+                }
+                configuracao.getConn().open();
             }
+
+            em.getTransaction().begin();
+            ImportacaoController ic = new ImportacaoController(em, configuracao);
+            ic.processarImportacao();
+
+//            GamificationController gc = new GamificationController(em, connection);
+//            dsInfo = "";
+//            dsInfo += gc.processVwIndividuoGrupo();
+//            dsInfo += "\n\n" + gc.processVwIndividuoAtividade();
+//            dsInfo += "\n\n" + gc.processVwGrupoAtividade();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
             dsMessage = "Something wrong occoured";
         } finally {
-            connection.close();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            configuracao.getConn().close();
         }
         return SUCCESS;
     }
 
     private String testConnection() {
         try {
-            dsMessage = connection.open();
-            connection.close();
-            sessionMap.put("CURRENT_CONNECTION", connection);
+            dsMessage = configuracao.getConn().open();
+            configuracao.getConn().close();
         } catch (Exception ex) {
             ex.printStackTrace();
             dsMessage = "Something wrong occoured";
         }
         return SUCCESS;
-    }
-
-    private boolean validConnection() {
-        sessionMap = ActionContext.getContext().getSession();
-        if (connection == null) {
-            connection = (ConnectionDTO) sessionMap.get("CURRENT_CONNECTION");
-        } else {
-            testConnection();
-            if (dsMessage != null && !dsMessage.isEmpty()) {
-                return false;
-            }
-        }
-
-        if (connection == null) {
-            dsMessage = "No connection was defined/save";
-            return false;
-        }
-
-        return true;
     }
 
     public ConnectionDTO getConnection() {
@@ -489,6 +492,14 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
 
     public void setRegraExtracaoList(List<SysRegraExtracao> regraExtracaoList) {
         this.regraExtracaoList = regraExtracaoList;
+    }
+
+    public List<Desafio> getDesafioList() {
+        return desafioList;
+    }
+
+    public void setDesafioList(List<Desafio> desafioList) {
+        this.desafioList = desafioList;
     }
 
 }
