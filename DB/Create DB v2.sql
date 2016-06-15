@@ -19,6 +19,7 @@ USE `gpt` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gpt`.`sys_configuracao` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `id_identificador` INT NOT NULL,
   `nm_configuracao` VARCHAR(45) NOT NULL,
   `sg_tipo_importacao` INT NOT NULL COMMENT '1 = banco de dados\n2 = csv',
   `sg_tipo_bd` INT NULL COMMENT '1 - postgres\n2 - mysql',
@@ -29,7 +30,8 @@ CREATE TABLE IF NOT EXISTS `gpt`.`sys_configuracao` (
   `nm_user` VARCHAR(45) NULL,
   `cd_pass` VARCHAR(45) NULL,
   `ds_diretorio_arquivos` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_ideantificador_UNIQUE` (`id_identificador` ASC))
 ENGINE = InnoDB;
 
 
@@ -61,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `gpt`.`sys_atributo` (
   `nm_atributo` VARCHAR(45) NOT NULL,
   `id_tabela` INT NOT NULL,
   `id_tipo_atributo` INT NOT NULL,
+  `fg_coluna_view` TINYINT(1) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_sys_atributo_sys_tabela_idx` (`id_tabela` ASC),
   INDEX `fk_sys_atributo_sys_tipo_atributo1_idx` (`id_tipo_atributo` ASC),
@@ -94,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `gpt`.`sys_tipo_atributo_operacao` (
   `id` INT NOT NULL,
   `id_operacao` INT NOT NULL,
   `id_tipo_atributo` INT NOT NULL,
+  `nm_operadoracao_sql` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_sys_tipo_atributo_operacao_sys_operacao1_idx` (`id_operacao` ASC),
   INDEX `fk_sys_tipo_atributo_operacao_sys_tipo_atributo1_idx` (`id_tipo_atributo` ASC),
@@ -119,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `gpt`.`sys_regra_tabela` (
   `id_tabela` INT NOT NULL,
   `id_configuracao` INT NOT NULL,
   `sg_tipo_insercao` INT NOT NULL COMMENT '1 - apenas inserir\n2 - inserir e altear',
-  `sg_tipo_remocao` INT NOT NULL COMMENT '1 - registros nao sincronizados\n2 -  não remover\n3 - regra_remocao',
+  `sg_tipo_remocao` INT NOT NULL COMMENT '1 - registros nao sincronizados\n2 - não remover\n3 - regra_remocao',
   PRIMARY KEY (`id`),
   INDEX `fk_sys_regra_tabela_sys_tabela1_idx` (`id_tabela` ASC),
   INDEX `fk_sys_regra_tabela_sys_configuracao1_idx` (`id_configuracao` ASC),
@@ -137,45 +141,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `gpt`.`sys_regra_filtro`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `gpt`.`sys_regra_filtro` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `fg_ativo` TINYINT(1) NOT NULL DEFAULT 1,
-  `id_tabela` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_sys_regra_filtro_sys_tabela1_idx` (`id_tabela` ASC),
-  CONSTRAINT `fk_sys_regra_filtro_sys_tabela1`
-    FOREIGN KEY (`id_tabela`)
-    REFERENCES `gpt`.`sys_tabela` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `gpt`.`sys_regra`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `gpt`.`sys_regra` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `vl_regra` VARCHAR(45) NOT NULL,
-  `id_regra_tabela` INT NULL,
-  `id_regra_filtro` INT NULL,
+  `id_regra_tabela` INT NOT NULL,
   `id_atributo` INT NOT NULL,
   `id_operacao` INT NOT NULL,
+  `vl_regra` VARCHAR(45) NOT NULL,
+  `sg_tipo_regra` INT NOT NULL COMMENT '1 - filtro\n2 - remocao',
   PRIMARY KEY (`id`),
   INDEX `fk_sys_regra_sys_regra_tabela1_idx` (`id_regra_tabela` ASC),
-  INDEX `fk_sys_regra_sys_regra_filtro1_idx` (`id_regra_filtro` ASC),
   INDEX `fk_sys_regra_sys_atributo1_idx` (`id_atributo` ASC),
   INDEX `fk_sys_regra_sys_operacao1_idx` (`id_operacao` ASC),
   CONSTRAINT `fk_sys_regra_sys_regra_tabela1`
     FOREIGN KEY (`id_regra_tabela`)
     REFERENCES `gpt`.`sys_regra_tabela` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_sys_regra_sys_regra_filtro1`
-    FOREIGN KEY (`id_regra_filtro`)
-    REFERENCES `gpt`.`sys_regra_filtro` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_sys_regra_sys_atributo1`
@@ -286,6 +267,7 @@ CREATE TABLE IF NOT EXISTS `gpt`.`desafio` (
   `id_externo` INT NOT NULL,
   `id_configuracao` INT NOT NULL,
   `nm_desafio` VARCHAR(255) NOT NULL,
+  `fg_ativo` TINYINT(1) NOT NULL DEFAULT 1,
   `dt_ultima_sincronizacao` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_desafio_sys_configuracao1_idx` (`id_configuracao` ASC),
@@ -310,6 +292,9 @@ CREATE TABLE IF NOT EXISTS `gpt`.`individuo_atividade` (
   `vl_atingido` FLOAT NULL,
   `dt_atingido` DATETIME NULL,
   `sg_atingido` VARCHAR(45) NULL,
+  `vl_planejado` FLOAT NULL,
+  `dt_planejado` DATETIME NULL,
+  `sg_planejado` VARCHAR(45) NULL,
   `dt_ultima_sincronizacao` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_individuo_atividade_individuo1_idx` (`id_individuo` ASC),
@@ -346,6 +331,9 @@ CREATE TABLE IF NOT EXISTS `gpt`.`grupo_atividade` (
   `vl_atingido` FLOAT NULL,
   `dt_atingido` DATETIME NULL,
   `sg_atingido` VARCHAR(45) NULL,
+  `vl_planejado` FLOAT NULL,
+  `dt_planejado` DATETIME NULL,
+  `sg_planejado` VARCHAR(45) NULL,
   `dt_ultima_sincronizacao` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_grupo_atividade_grupo1_idx` (`id_grupo` ASC),
@@ -491,6 +479,42 @@ CREATE TABLE IF NOT EXISTS `gpt`.`reconpensa_item` (
   CONSTRAINT `fk_reconpensa_item_item1`
     FOREIGN KEY (`id_item`)
     REFERENCES `gpt`.`item` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `gpt`.`sys_automacao`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `gpt`.`sys_automacao` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_configuracao` INT NOT NULL,
+  `nr_dia_semana` INT NOT NULL,
+  `hr_automacao` TIME NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_sys_automacao_sys_configuracao1_idx` (`id_configuracao` ASC),
+  CONSTRAINT `fk_sys_automacao_sys_configuracao1`
+    FOREIGN KEY (`id_configuracao`)
+    REFERENCES `gpt`.`sys_configuracao` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `gpt`.`sys_regra_extracao`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `gpt`.`sys_regra_extracao` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_configuracao` INT NOT NULL,
+  `nm_view` VARCHAR(45) NOT NULL,
+  `sql_view` VARCHAR(1500) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_sys_regra_extracao_sys_configuracao1_idx` (`id_configuracao` ASC),
+  CONSTRAINT `fk_sys_regra_extracao_sys_configuracao1`
+    FOREIGN KEY (`id_configuracao`)
+    REFERENCES `gpt`.`sys_configuracao` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
