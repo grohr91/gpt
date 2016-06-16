@@ -53,10 +53,10 @@ public class Automacao implements ServletContextListener {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("PersistenceTccUnit");
         EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
-            ImportacaoController importacaoController = new ImportacaoController(em);
-            importacaoController.processarTodasImportacoes();
-            em.getTransaction().commit();
+//            em.getTransaction().begin();
+//            ImportacaoController importacaoController = new ImportacaoController(em);
+//            importacaoController.processarTodasImportacoes();
+//            em.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("Oops! Algo deu errado na importação");
