@@ -67,10 +67,12 @@ function adicionarRegra(tabela, index, sgTipoRegra, idRegraTabela) {
     var vlRegra = $("[tabela-id='" + tabela + "'][index-id='" + index + "'][tipo-regra='" + sgTipoRegra + "'] .vl-regra").val();
     var idOperacao = $("[tabela-id='" + tabela + "'][index-id='" + index + "'][tipo-regra='" + sgTipoRegra + "'] .tipo-operacao").val();
     var idAtributo = $("[tabela-id='" + tabela + "'][index-id='" + index + "'][tipo-regra='" + sgTipoRegra + "'] .tipo-atributo").val();
+    var vlRegraNovo = $("[tabela-id='" + tabela + "'][index-id='" + index + "'][tipo-regra='" + sgTipoRegra + "'] .vl-regra-novo").val();
     $.ajax({
         url: $("#url").val() + "/salvaRegra",
         data: {
             'regra.vlRegra': vlRegra,
+            'regra.vlRegraNovo': vlRegraNovo,
             'regra.sgTipoRegra': sgTipoRegra,
             'regra.regraTabela.id': idRegraTabela,
             'regra.operacao.id': idOperacao,

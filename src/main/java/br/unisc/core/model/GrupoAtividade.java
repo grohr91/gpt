@@ -7,6 +7,7 @@ package br.unisc.core.model;
 
 import br.unisc.web.model.SysConfiguracao;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.apache.commons.lang.xwork.StringUtils;
 
 /**
  *
@@ -237,4 +239,40 @@ public class GrupoAtividade implements Serializable {
         this.sgPlanejado = sgPlanejado;
     }
 
+    public String getVal(String nmAtributo) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (StringUtils.isBlank(nmAtributo)) {
+                return "";
+            } else if (nmAtributo.equals("nm_desafio")) {
+                if (this.desafio == null || StringUtils.isBlank(this.desafio.getNmDesafio())) {
+                    return "null";
+                }
+                return this.desafio.getNmDesafio();
+            } else if (nmAtributo.equals("nm_individuo")) {
+                if (this.grupo == null || StringUtils.isBlank(this.grupo.getNmGrupo())) {
+                    return "null";
+                }
+                return this.grupo.getNmGrupo();
+            } else if (nmAtributo.equals("dt_ocorrencia")) {
+                return sdf.format(this.dtOcorrencia);
+            } else if (nmAtributo.equals("vl_atingido")) {
+                return this.vlAtingido.toString();
+            } else if (nmAtributo.equals("dt_atingido")) {
+                return this.dtAtingido.toString();
+            } else if (nmAtributo.equals("sg_atingido")) {
+                return sdf.format(this.sgAtingido);
+            } else if (nmAtributo.equals("vl_planejado")) {
+                return this.vlPlanejado.toString();
+            } else if (nmAtributo.equals("dt_planejado")) {
+                return this.dtPlanejado.toString();
+            } else if (nmAtributo.equals("sg_planejado")) {
+                return this.sgPlanejado;
+            }
+        } catch (Exception ex) {
+
+        }
+
+        return "";
+    }
 }

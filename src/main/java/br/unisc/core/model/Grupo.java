@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.apache.commons.lang.xwork.StringUtils;
 
 /**
  *
@@ -37,7 +38,6 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Grupo.findByIdExterno", query = "SELECT g FROM Grupo g WHERE g.idExterno = :idExterno"),
     @NamedQuery(name = "Grupo.findByNmGrupo", query = "SELECT g FROM Grupo g WHERE g.nmGrupo = :nmGrupo"),
     @NamedQuery(name = "Grupo.findByFgAtivo", query = "SELECT g FROM Grupo g WHERE g.fgAtivo = :fgAtivo"),
-    @NamedQuery(name = "Grupo.findByDtUltimaAtualizacao", query = "SELECT g FROM Grupo g WHERE g.dtUltimaAtualizacao = :dtUltimaAtualizacao"),
     @NamedQuery(name = "Grupo.findByXpAtual", query = "SELECT g FROM Grupo g WHERE g.xpAtual = :xpAtual"),
     @NamedQuery(name = "Grupo.findByQtAtividadesConcluidas", query = "SELECT g FROM Grupo g WHERE g.qtAtividadesConcluidas = :qtAtividadesConcluidas"),
     @NamedQuery(name = "Grupo.findByQtDesafiosConcluidos", query = "SELECT g FROM Grupo g WHERE g.qtDesafiosConcluidos = :qtDesafiosConcluidos"),
@@ -62,9 +62,9 @@ public class Grupo implements Serializable {
     @Column(name = "fg_ativo")
     private boolean fgAtivo;
     @Basic(optional = false)
-    @Column(name = "dt_ultima_atualizacao")
+    @Column(name = "dt_ultima_sincronizacao")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dtUltimaAtualizacao;
+    private Date dtUltimaSincronizacao;
     @Column(name = "xp_atual")
     private Integer xpAtual;
     @Column(name = "qt_atividades_concluidas")
@@ -108,14 +108,14 @@ public class Grupo implements Serializable {
         this.idExterno = idExterno;
         this.nmGrupo = nmGrupo;
         this.fgAtivo = fgAtivo;
-        this.dtUltimaAtualizacao = new Date();
+        this.dtUltimaSincronizacao = new Date();
     }
 
     public Grupo(Integer id, String nmGrupo, boolean fgAtivo, Date dtUltimaAtualizacao) {
         this.id = id;
         this.nmGrupo = nmGrupo;
         this.fgAtivo = fgAtivo;
-        this.dtUltimaAtualizacao = dtUltimaAtualizacao;
+        this.dtUltimaSincronizacao = dtUltimaAtualizacao;
     }
 
     public Integer getId() {
@@ -150,12 +150,12 @@ public class Grupo implements Serializable {
         this.fgAtivo = fgAtivo;
     }
 
-    public Date getDtUltimaAtualizacao() {
-        return dtUltimaAtualizacao;
+    public Date getDtUltimaSincronizacao() {
+        return dtUltimaSincronizacao;
     }
 
-    public void setDtUltimaAtualizacao(Date dtUltimaAtualizacao) {
-        this.dtUltimaAtualizacao = dtUltimaAtualizacao;
+    public void setDtUltimaSincronizacao(Date dtUltimaSincronizacao) {
+        this.dtUltimaSincronizacao = dtUltimaSincronizacao;
     }
 
     public Integer getXpAtual() {
@@ -263,4 +263,79 @@ public class Grupo implements Serializable {
         return "br.unisc.core.model.Grupo[ id=" + id + " ]";
     }
 
+    public String getVal(String nmAtributo) {
+        if (StringUtils.isBlank(nmAtributo)) {
+            return "";
+        } else if (nmAtributo.equals("nm_grupo")) {
+            if (StringUtils.isBlank(this.nmGrupo)) {
+                return "null";
+            }
+            return this.nmGrupo;
+        } else if (nmAtributo.equals("xp_atual")) {
+            if (this.xpAtual == null) {
+                return "null";
+            }
+            return this.xpAtual.toString();
+        } else if (nmAtributo.equals("qt_atividades_concluidas")) {
+            if (this.qtAtividadesConcluidas == null) {
+                return "null";
+            }
+            return this.qtAtividadesConcluidas.toString();
+        } else if (nmAtributo.equals("qt_desafios_concluidos")) {
+            if (this.qtDesafiosConcluidos == null) {
+                return "null";
+            }
+            return this.qtDesafiosConcluidos.toString();
+        } else if (nmAtributo.equals("qt_metas_concluidas")) {
+            if (this.qtMetasConcluidas == null) {
+                return "null";
+            }
+            return this.qtMetasConcluidas.toString();
+        } else if (nmAtributo.equals("qt_emblemas")) {
+            if (this.qtEmblemas == null) {
+                return "null";
+            }
+            return this.qtEmblemas.toString();
+        } else if (nmAtributo.equals("qt_itens")) {
+            if (this.qtItens == null) {
+                return "null";
+            }
+            return this.qtItens.toString();
+        } else if (nmAtributo.equals("vl_dinheiro")) {
+            if (this.vlDinehiro == null) {
+                return "null";
+            }
+            return this.vlDinehiro.toString();
+        }
+
+        return "";
+    }
+
+    public void setVal(String nmAtributo, String novoVal) {
+        try {
+            if (StringUtils.isBlank(nmAtributo)) {
+                return;
+            } else if (nmAtributo.equals("nm_grupo")) {
+                this.nmGrupo = novoVal;
+                this.fgAtivo = true;
+                this.idExterno = null;
+                this.id = null;
+            } else if (nmAtributo.equals("xp_atual")) {
+                this.xpAtual = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("qt_atividades_concluidas")) {
+                this.qtAtividadesConcluidas = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("qt_desafios_concluidos")) {
+                this.qtDesafiosConcluidos = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("qt_metas_concluidas")) {
+                this.qtMetasConcluidas = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("qt_emblemas")) {
+                this.qtEmblemas = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("qt_itens")) {
+                this.qtItens = Integer.parseInt(novoVal);
+            } else if (nmAtributo.equals("vl_dinheiro")) {
+                this.vlDinehiro = Float.parseFloat(novoVal);
+            }
+        } catch (Exception ex) {
+        }
+    }
 }

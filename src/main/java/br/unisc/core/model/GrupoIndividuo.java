@@ -31,8 +31,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "GrupoIndividuo.findAll", query = "SELECT g FROM GrupoIndividuo g"),
     @NamedQuery(name = "GrupoIndividuo.findById", query = "SELECT g FROM GrupoIndividuo g WHERE g.id = :id"),
-    @NamedQuery(name = "GrupoIndividuo.findByFgAtivo", query = "SELECT g FROM GrupoIndividuo g WHERE g.fgAtivo = :fgAtivo"),
-    @NamedQuery(name = "GrupoIndividuo.findByDtUltimaAtualizacao", query = "SELECT g FROM GrupoIndividuo g WHERE g.dtUltimaAtualizacao = :dtUltimaAtualizacao")})
+    @NamedQuery(name = "GrupoIndividuo.findByFgAtivo", query = "SELECT g FROM GrupoIndividuo g WHERE g.fgAtivo = :fgAtivo")})
 public class GrupoIndividuo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,9 +44,9 @@ public class GrupoIndividuo implements Serializable {
     @Column(name = "fg_ativo")
     private boolean fgAtivo;
     @Basic(optional = false)
-    @Column(name = "dt_ultima_atualizacao")
+    @Column(name = "dt_ultima_sincronizacao")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dtUltimaAtualizacao;
+    private Date dtUltimaSincronizacao;
     @JoinColumn(name = "id_configuracao", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private SysConfiguracao configuracao;
@@ -68,13 +67,14 @@ public class GrupoIndividuo implements Serializable {
     public GrupoIndividuo(Integer id, boolean fgAtivo, Date dtUltimaAtualizacao) {
         this.id = id;
         this.fgAtivo = fgAtivo;
-        this.dtUltimaAtualizacao = dtUltimaAtualizacao;
+        this.dtUltimaSincronizacao = dtUltimaAtualizacao;
     }
 
     public GrupoIndividuo(Grupo g, Individuo i, boolean fgAtivo) {
         this.grupo = g;
         this.individuo = i;
         this.fgAtivo = fgAtivo;
+        this.dtUltimaSincronizacao = new Date();
     }
 
     public GrupoIndividuo(Grupo g, Individuo i) {
@@ -98,12 +98,12 @@ public class GrupoIndividuo implements Serializable {
         this.fgAtivo = fgAtivo;
     }
 
-    public Date getDtUltimaAtualizacao() {
-        return dtUltimaAtualizacao;
+    public Date getDtUltimaSincronizacao() {
+        return dtUltimaSincronizacao;
     }
 
-    public void setDtUltimaAtualizacao(Date dtUltimaAtualizacao) {
-        this.dtUltimaAtualizacao = dtUltimaAtualizacao;
+    public void setDtUltimaSincronizacao(Date dtUltimaSincronizacao) {
+        this.dtUltimaSincronizacao = dtUltimaSincronizacao;
     }
 
     public SysConfiguracao getConfiguracao() {

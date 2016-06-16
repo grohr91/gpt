@@ -76,12 +76,12 @@ public class Desafio implements Serializable {
     }
 
     public Desafio(Integer idDesafio, String nmDesafio) {
-        this.id = idDesafio;
+        this.idExterno = idDesafio;
         this.nmDesafio = nmDesafio;
     }
 
-    public Desafio(Integer idDesafio, String nmDesafio, Boolean fgAtivo) {
-        this.id = idDesafio;
+    public Desafio(Integer idDesafio, Boolean fgAtivo) {
+        this.idExterno = idDesafio;
         this.nmDesafio = nmDesafio;
         this.fgAtivo = fgAtivo;
     }

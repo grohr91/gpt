@@ -1,13 +1,15 @@
 package br.unisc.core.controller;
 
-import br.unisc.web.dto.ConnectionDTO;
 import br.unisc.core.dto.VwIndividuoGrupoDTO;
+import br.unisc.core.model.Desafio;
 import br.unisc.core.model.Grupo;
 import br.unisc.core.model.GrupoIndividuo;
 import br.unisc.core.model.Individuo;
-import br.unisc.util.DBUtil;
 import br.unisc.web.model.SysConfiguracao;
+import br.unisc.web.model.SysRegra;
 import br.unisc.web.model.SysRegraTabela;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,13 +22,7 @@ import org.apache.commons.lang.xwork.StringUtils;
 public class VwIndividuoGrupoDTOController {
 
     protected EntityManager em;
-    protected ConnectionDTO conn;
     protected SysConfiguracao configuracao;
-
-    public VwIndividuoGrupoDTOController(EntityManager em, ConnectionDTO c) {
-        this.em = em;
-        this.conn = c;
-    }
 
     public VwIndividuoGrupoDTOController(EntityManager em, SysConfiguracao configuracao) {
         this.em = em;
@@ -35,34 +31,45 @@ public class VwIndividuoGrupoDTOController {
 
     public List<VwIndividuoGrupoDTO> findVwIndividuoGrupoByRegra(
             SysRegraTabela regraIndividuo, SysRegraTabela regraGrupo, SysRegraTabela regraGrupoIndividuo) {
-        SysRegraTabelaController srtc = new SysRegraTabelaController(em);
-        String where = " WHERE 1=1 " + srtc.criaWhereByRegraTabela(regraIndividuo, true);
-        where += srtc.criaWhereByRegraTabela(regraGrupo, true);
-        where += srtc.criaWhereByRegraTabela(regraGrupoIndividuo, true);
+        if (regraIndividuo.getFgImportar() || regraGrupo.getFgImportar() || regraGrupoIndividuo.getFgImportar()) {
+            SysRegraTabelaController srtc = new SysRegraTabelaController(em);
+            String where = " WHERE 1=1 " + srtc.criaWhereByRegraTabela(regraIndividuo, true);
+            where += srtc.criaWhereByRegraTabela(regraGrupo, true);
+            where += srtc.criaWhereByRegraTabela(regraGrupoIndividuo, true);
 
-        Query q = configuracao.getConn().getEm().createNativeQuery("SELECT DISTINCT * FROM vw_individuo_grupo "
-                + where
-                + "ORDER BY id_individuo ", VwIndividuoGrupoDTO.class);
-        return q.getResultList();
-    }
-
-    /**
-     * @deprecated @return
-     */
-    public List<VwIndividuoGrupoDTO> findIndividuoGrupo() {
-        Query q = conn.getEm().createNativeQuery("SELECT DISTINCT * FROM vw_individuo_grupo "
-                + "ORDER BY id_individuo ", VwIndividuoGrupoDTO.class);
-        return q.getResultList();
+            Query q = configuracao.getConn().getEm().createNativeQuery("SELECT DISTINCT * FROM vw_individuo_grupo "
+                    + where
+                    + "ORDER BY id_individuo ", VwIndividuoGrupoDTO.class);
+            return q.getResultList();
+        }
+        return new ArrayList<VwIndividuoGrupoDTO>();
     }
 
     public Individuo salvaIndividuo(Individuo obj, SysRegraTabela regra, SysConfiguracao configuracao) {
         if (regra.getFgImportar()) {
             obj.setConfiguracao(configuracao);
             Individuo iBD = findIndividuoByIdExterno(obj.getIdExterno());
-            if (iBD != null) {
-                obj.setId(iBD.getId());
+
+            //quando cai em regra de transformacao de nome, entra aqui
+            if ((iBD == null || iBD.getId() == null) && StringUtils.isNotBlank(obj.getNmIndividuo())) {
+                iBD = findIndividuoByNmIndividuo(obj.getNmIndividuo());
             }
 
+            if (iBD != null && iBD.getId() != null) {
+                obj.setId(iBD.getId());
+
+                //remocao lógica
+                if (SysRegraTabela.SG_TIPO_REMOCAO_REGRA_REMOCAO == regra.getSgTipoRemocao()) {
+                    removerIndividuoByRegra(obj, regra);
+                }
+            }
+
+            //aplica regra de filtros configurados na tela da ferramenta
+            if (individuoFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_FILTRO)) {
+                return null;
+            }
+
+            Grupo gAux = obj.getGrupo();
             if (SysRegraTabela.SG_TIPO_INSERCAO_INSERIR_E_ALTERAR == regra.getSgTipoInsercao()) {
                 obj = em.merge(obj);
             } else if (SysRegraTabela.SG_TIPO_INSERCAO_APENAS_INSERIR == regra.getSgTipoInsercao()) {
@@ -72,6 +79,7 @@ public class VwIndividuoGrupoDTOController {
                 }
             }
             em.flush();
+            obj.setGrupo(gAux);
         }
 
         return obj;
@@ -81,14 +89,32 @@ public class VwIndividuoGrupoDTOController {
         if (regra.getFgImportar() && obj != null && StringUtils.isNotBlank(obj.getNmGrupo())) {
             obj.setConfiguracao(configuracao);
             Grupo gBD = findGrupoByIdExterno(obj.getIdExterno());
-            if (gBD != null) {
+
+            //quando cai em regra de transformacao de nome, entra aqui
+            if ((gBD == null || gBD.getId() == null) && StringUtils.isNotBlank(obj.getNmGrupo())) {
+                gBD = findGrupoByNmGrupo(obj.getNmGrupo());
+            }
+
+            if (gBD != null && gBD.getId() != null) {
                 obj.setId(gBD.getId());
+
+                //remocao lógica
+                if (SysRegraTabela.SG_TIPO_REMOCAO_REGRA_REMOCAO == regra.getSgTipoRemocao()) {
+                    removerGrupoByRegra(obj, regra);
+                }
+            }
+
+            //aplica regra de filtros configurados na tela da ferramenta
+            if (grupoFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_FILTRO)) {
+                return null;
             }
 
             if (SysRegraTabela.SG_TIPO_INSERCAO_INSERIR_E_ALTERAR == regra.getSgTipoInsercao()) {
+                obj.setDtUltimaSincronizacao(new Date());
                 obj = em.merge(obj);
             } else if (SysRegraTabela.SG_TIPO_INSERCAO_APENAS_INSERIR == regra.getSgTipoInsercao()) {
                 if (gBD == null) {
+                    obj.setDtUltimaSincronizacao(new Date());
                     em.persist(obj);
                 }
             }
@@ -143,10 +169,11 @@ public class VwIndividuoGrupoDTOController {
         return result.get(0);
     }
 
-    private Individuo findIndividuoByIdExterno(int idExterno) {
+    public Individuo findIndividuoByIdExterno(int idExterno) {
         Query q = em.createNativeQuery("SELECT * FROM individuo "
-                + "WHERE id_externo = ?1", Individuo.class);
+                + "WHERE id_externo = ?1 AND id_configuracao = ?2", Individuo.class);
         q.setParameter(1, idExterno);
+        q.setParameter(2, configuracao.getId());
         List<Individuo> result = q.getResultList();
         if (!result.isEmpty()) {
             return result.get(0);
@@ -154,14 +181,131 @@ public class VwIndividuoGrupoDTOController {
         return null;
     }
 
-    private Grupo findGrupoByIdExterno(Integer idExterno) {
+    public Grupo findGrupoByIdExterno(Integer idExterno) {
         Query q = em.createNativeQuery("SELECT * FROM grupo "
-                + "WHERE id_externo = ?1", Grupo.class);
+                + "WHERE id_externo = ?1 AND id_configuracao = ?2", Grupo.class);
         q.setParameter(1, idExterno);
+        q.setParameter(2, configuracao.getId());
         List<Grupo> result = q.getResultList();
         if (!result.isEmpty()) {
             return result.get(0);
         }
         return null;
     }
+
+    public Desafio findDesafioByIdExterno(int idExterno) {
+        Query q = em.createNativeQuery("SELECT * FROM desafio "
+                + "WHERE id_externo = ?1 AND id_configuracao = ?2", Desafio.class);
+        q.setParameter(1, idExterno);
+        q.setParameter(2, configuracao.getId());
+        List<Desafio> result = q.getResultList();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
+    }
+
+    private Grupo findGrupoByNmGrupo(String nmGrupo) {
+        Query q = em.createNativeQuery("SELECT * FROM grupo "
+                + "WHERE lower(nm_grupo) LIKE lower(?1) AND id_configuracao = ?2", Grupo.class);
+        q.setParameter(1, nmGrupo);
+        q.setParameter(2, configuracao.getId());
+        List<Grupo> result = q.getResultList();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
+    }
+
+    private Individuo findIndividuoByNmIndividuo(String nmIndividuo) {
+        Query q = em.createNativeQuery("SELECT * FROM individuo "
+                + "WHERE lower(nm_individuo) LIKE lower(?1) AND id_configuracao = ?2", Individuo.class);
+        q.setParameter(1, nmIndividuo);
+        q.setParameter(2, configuracao.getId());
+        List<Individuo> result = q.getResultList();
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
+    }
+
+    private boolean individuoFiltrado(Individuo obj, SysRegraTabela regra, int tipoRegra) {
+        boolean filtrado = true;
+        //se nenhuma regra definida, nao filtra
+        if (regra.getSysRegraList().isEmpty()) {
+            filtrado = false;
+        }
+        SysRegraController src = new SysRegraController(em);
+        for (SysRegra sr : regra.getSysRegraList()) {
+            if (tipoRegra == sr.getSgTipoRegra()) {
+                //se valor do atributo for igual ao definido no filtro, entao nao filtrado
+                String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
+                if (src.compareByRegra(valorAtributo, sr)) {
+                    filtrado = false;
+                    break;
+                }
+            }
+        }
+        return filtrado;
+    }
+
+    private Individuo removerIndividuoByRegra(Individuo obj, SysRegraTabela regra) {
+        if (individuoFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_REMOCAO)) {
+            obj.setFgAtivo(false);
+        }
+        return obj;
+    }
+
+    private boolean grupoFiltrado(Grupo obj, SysRegraTabela regra, int tipoRegra) {
+        boolean filtrado = false;
+        SysRegraController src = new SysRegraController(em);
+        for (SysRegra sr : regra.getSysRegraList()) {
+            if (tipoRegra == sr.getSgTipoRegra()) {
+                filtrado = true;
+                //se valor do atributo for igual ao definido no filtro, entao nao filtrado
+                String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
+                if (src.compareByRegra(valorAtributo, sr)) {
+                    filtrado = false;
+                    break;
+                }
+            }
+        }
+        return filtrado;
+    }
+
+    private Grupo removerGrupoByRegra(Grupo obj, SysRegraTabela regra) {
+        if (grupoFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_REMOCAO)) {
+            obj.setFgAtivo(false);
+        }
+        return obj;
+    }
+
+    public Individuo aplicaTransformacaoByRegra(Individuo obj, SysRegraTabela regraTabela) {
+        SysRegraController src = new SysRegraController(em);
+        for (SysRegra sr : regraTabela.getSysRegraList()) {
+            if (SysRegra.SG_TIPO_REGRA_TRANSFORMACAO == sr.getSgTipoRegra()) {
+                //se valor do atributo for igual ao definido na transformacao, entao seta valor
+                String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
+                if (src.compareByRegra(valorAtributo, sr)) {
+                    obj.setVal(sr.getAtributo().getNmAtributo(), sr.getVlRegraNovo());
+                }
+            }
+        }
+        return obj;
+    }
+
+    public Grupo aplicaTransformacaoGrupoByRegra(Grupo obj, SysRegraTabela regraTabela) {
+        SysRegraController src = new SysRegraController(em);
+        for (SysRegra sr : regraTabela.getSysRegraList()) {
+            if (SysRegra.SG_TIPO_REGRA_TRANSFORMACAO == sr.getSgTipoRegra()) {
+                //se valor do atributo for igual ao definido na transformacao, entao seta valor
+                String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
+                if (src.compareByRegra(valorAtributo, sr)) {
+                    obj.setVal(sr.getAtributo().getNmAtributo(), sr.getVlRegraNovo());
+                }
+            }
+        }
+        return obj;
+    }
+
 }

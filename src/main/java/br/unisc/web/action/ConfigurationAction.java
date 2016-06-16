@@ -2,7 +2,6 @@ package br.unisc.web.action;
 
 import br.unisc.core.controller.ImportacaoController;
 import br.unisc.core.model.Desafio;
-import br.unisc.web.controller.GamificationController;
 import br.unisc.web.dto.ConnectionDTO;
 import br.unisc.util.EMAware;
 import br.unisc.web.controller.ConfiguracaoController;
@@ -19,7 +18,6 @@ import br.unisc.web.model.SysRegraTabela;
 import br.unisc.web.model.SysTabela;
 import br.unisc.web.model.SysTipoAtributo;
 import br.unisc.web.model.SysTipoAtributoOperacao;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -205,13 +203,14 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
             SysOperacao so = em.find(SysOperacao.class, regra.getOperacao().getId());
             regraHtml = "<div style='padding-bottom: 10px; padding-top: 10px;' class='div-regra' regra-id='" + regra.getId() + "'>"
                     + "<div class=\"col-md-9\">\n"
-                    + "<i class=\"glyphicon glyphicon-asterisk\"></i> <strong>Quando</strong> "
-                    + sa.getNmAtributo()
-                    + " <strong>for</strong> "
-                    + so.getNmOperacao()
+                    + "<i class=\"glyphicon glyphicon-asterisk\"></i> "
+                    + "<strong>Quando</strong> " + sa.getNmAtributo()
+                    + " <strong>for</strong> " + so.getNmOperacao()
                     + " <strong>a/que/de</strong> " + regra.getVlRegra()
+                    + (SysRegra.SG_TIPO_REGRA_TRANSFORMACAO == regra.getSgTipoRegra()
+                            ? " <strong>atribui-se</strong> " + regra.getVlRegraNovo() : "")
                     + "</div>"
-                    + "<div class=\"col-md-3\"> "
+                    + "<div class=\"col-md-2 col-md-offset-1\"> "
                     + "<a class=\"btn btn-xs btn-default\" href=\"javascript:excluiRegra("
                     + regra.getId() + ");\"><i class=\"glyphicon glyphicon-trash\"></i> Remover</a> "
                     + "</div>"
@@ -277,9 +276,11 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
 //            dsInfo += "\n\n" + gc.processVwIndividuoAtividade();
 //            dsInfo += "\n\n" + gc.processVwGrupoAtividade();
             em.getTransaction().commit();
+            dsInfo = "Importação realizada com sucesso!";
         } catch (Exception ex) {
             ex.printStackTrace();
-            dsMessage = "Something wrong occoured";
+            dsMessage = "Oops! Alguma coisa deu errada";
+            dsInfo = null;
         } finally {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();

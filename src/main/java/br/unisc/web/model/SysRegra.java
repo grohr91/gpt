@@ -34,6 +34,7 @@ public class SysRegra implements Serializable {
 
     public static final int SG_TIPO_REGRA_FILTRO = 1;
     public static final int SG_TIPO_REGRA_REMOCAO = 2;
+    public static final int SG_TIPO_REGRA_TRANSFORMACAO = 3;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,9 @@ public class SysRegra implements Serializable {
     @Basic(optional = false)
     @Column(name = "vl_regra")
     private String vlRegra;
+    @Basic(optional = false)
+    @Column(name = "vl_regra_novo")
+    private String vlRegraNovo;
     @Basic(optional = false)
     @Column(name = "sg_tipo_regra")
     private Integer sgTipoRegra;
@@ -114,6 +118,14 @@ public class SysRegra implements Serializable {
 
     public void setAtributo(SysAtributo atributo) {
         this.atributo = atributo;
+    }
+
+    public String getVlRegraNovo() {
+        return vlRegraNovo;
+    }
+
+    public void setVlRegraNovo(String vlRegraNovo) {
+        this.vlRegraNovo = vlRegraNovo;
     }
 
     @Override

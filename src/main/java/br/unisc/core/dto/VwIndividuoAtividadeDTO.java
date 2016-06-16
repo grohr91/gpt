@@ -26,8 +26,9 @@ public class VwIndividuoAtividadeDTO {
     private Integer idIndividuo;
     @Column(name = "id_desafio")
     private Integer idDesafio;
-    @Column(name = "nm_desafio")
-    private String nmDesafio;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "dt_ocorrencia")
+    private Date dtOcorrencia;
     @Column(name = "vl_atingido")
     private Float vlAtingido;
     @Column(name = "sg_atingido")
@@ -35,6 +36,13 @@ public class VwIndividuoAtividadeDTO {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "dt_atingido")
     private Date dtAtingido;
+    @Column(name = "vl_planejado")
+    private Float vlPlanejado;
+    @Column(name = "sg_planejado")
+    private String sgPlanejado;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "dt_planejado")
+    private Date dtPlanejado;
 
     public Integer getIdIndividuo() {
         return idIndividuo;
@@ -58,14 +66,6 @@ public class VwIndividuoAtividadeDTO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getNmDesafio() {
-        return nmDesafio;
-    }
-
-    public void setNmDesafio(String nmDesafio) {
-        this.nmDesafio = nmDesafio;
     }
 
     public Float getVlAtingido() {
@@ -92,16 +92,52 @@ public class VwIndividuoAtividadeDTO {
         this.dtAtingido = dtAtingido;
     }
 
+    public Date getDtOcorrencia() {
+        return dtOcorrencia;
+    }
+
+    public void setDtOcorrencia(Date dtOcorrencia) {
+        this.dtOcorrencia = dtOcorrencia;
+    }
+
+    public Float getVlPlanejado() {
+        return vlPlanejado;
+    }
+
+    public void setVlPlanejado(Float vlPlanejado) {
+        this.vlPlanejado = vlPlanejado;
+    }
+
+    public String getSgPlanejado() {
+        return sgPlanejado;
+    }
+
+    public void setSgPlanejado(String sgPlanejado) {
+        this.sgPlanejado = sgPlanejado;
+    }
+
+    public Date getDtPlanejado() {
+        return dtPlanejado;
+    }
+
+    public void setDtPlanejado(Date dtPlanejado) {
+        this.dtPlanejado = dtPlanejado;
+    }
+
     public IndividuoAtividade toIndividuoAtividade() {
         IndividuoAtividade id = new IndividuoAtividade();
         Individuo i = new Individuo(idIndividuo, Boolean.TRUE);
-        Desafio d = new Desafio(idDesafio, nmDesafio, Boolean.TRUE);
+        Desafio d = new Desafio(idDesafio, Boolean.TRUE);
 
         id.setIndividuo(i);
         id.setDesafio(d);
         id.setDtAtingido(dtAtingido);
         id.setSgAtingido(sgAtingido);
         id.setVlAtingido(vlAtingido);
+        id.setDtOcorrencia(dtOcorrencia);
+        id.setDtPlanejado(dtPlanejado);
+        id.setVlPlanejado(vlPlanejado);
+        id.setVlPlanejado(vlPlanejado);
         id.setFgAtivo(Boolean.TRUE);
         return id;
     }

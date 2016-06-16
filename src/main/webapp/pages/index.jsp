@@ -364,7 +364,7 @@
                                                                                         <div class="row">
                                                                                             <s:iterator value="sysRegraList" status="st1">
                                                                                                 <s:if test="sgTipoRegra == 1">
-                                                                                                    <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
+                                                                                                    <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                         <div class="col-md-9">
                                                                                                             <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
                                                                                                             <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
@@ -412,7 +412,7 @@
                                                                                             <div class="row">
                                                                                                 <s:iterator value="sysRegraList" status="st1">
                                                                                                     <s:if test="sgTipoRegra == 2">
-                                                                                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
+                                                                                                        <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                             <div class="col-md-9">
                                                                                                                 <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
                                                                                                                 <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
@@ -437,24 +437,56 @@
                                                                             </div>
 
                                                                             <div class="col-sm-12">
-                                                                                <h4><i class="glyphicon glyphicon-filter"></i> Filtro</h4><hr style="margin-top: 0px;">
+                                                                                <div class="div-regras-transformacao"  tabela-id="<s:property value="tabela.id"/>" index-id="<s:property value="#st.index"/>">
+                                                                                    <div class="panel panel-default">
+                                                                                        <div class="panel-body painel-regras">
+                                                                                            <div class="painel-regras-titulo">
+                                                                                                <i class="glyphicon glyphicon-transfer"></i> Regras de Transformação
+                                                                                            </div>
+                                                                                            <div class="row">
+                                                                                                <s:iterator value="sysRegraList" status="st1">
+                                                                                                    <s:if test="sgTipoRegra == 3">
+                                                                                                        <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
+                                                                                                            <div class="col-md-9">
+                                                                                                                <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
+                                                                                                                <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                                <strong>a/que/de</strong> <s:property value="vlRegra"/>
+                                                                                                                <strong>atribui-se</strong> <s:property value="vlRegraNovo"/>
+                                                                                                            </div>
+                                                                                                            <div class="col-md-2 col-md-offset-1">
+                                                                                                                <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </s:if>
+                                                                                                </s:iterator>
+                                                                                                <s:action var="atributos%{id}" name="carregaNovaRegra" namespace="/" executeResult="true">
+                                                                                                    <s:param name="configuracao.id" value="%{configuracao.id}"/>
+                                                                                                    <s:param name="tabela.id" value="%{id}"/>
+                                                                                                    <s:param name="index" value="%{#st.index}"/>
+                                                                                                    <s:param name="regra.sgTipoRegra" value="3"/>
+                                                                                                </s:action>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="col-sm-10 col-sm-offset-2">
+
+                                                                            <div class="col-sm-12">
                                                                                 <div class="panel panel-default">
                                                                                     <div class="panel-body painel-regras">
                                                                                         <div class="painel-regras-titulo">
-                                                                                            Regras de Filtro
+                                                                                            <i class="glyphicon glyphicon-filter"></i> Regras de Filtro
                                                                                         </div>
                                                                                         <div class="row">
                                                                                             <s:iterator value="sysRegraList" status="st1">
                                                                                                 <s:if test="sgTipoRegra == 1">
-                                                                                                    <div style="padding-bottom: 10px; padding-top: 10px;" class="div-regra" regra-id="<s:property value="id"/>">
+                                                                                                    <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                         <div class="col-md-9">
                                                                                                             <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
                                                                                                             <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
                                                                                                             <strong>a/que/de</strong> <s:property value="vlRegra"/>
                                                                                                         </div>
-                                                                                                        <div class="col-md-3">
+                                                                                                        <div class="col-md-2 col-md-offset-1">
                                                                                                             <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
                                                                                                         </div>
                                                                                                     </div>

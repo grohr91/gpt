@@ -95,7 +95,7 @@ public class VwGrupoAtividadeDTO {
     public GrupoAtividade toGrupoAtividade() {
         GrupoAtividade gd = new GrupoAtividade();
         Grupo g = new Grupo(idGrupo, Boolean.TRUE);
-        Desafio d = new Desafio(idDesafio, nmDesafio, Boolean.TRUE);
+        Desafio d = new Desafio(idDesafio, Boolean.TRUE);
 
         gd.setDesafio(d);
         gd.setGrupo(g);

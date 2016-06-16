@@ -61,11 +61,18 @@ public class SysRegraTabelaController {
                             .setParameter("idTipoAtributo", sr.getAtributo().getTipoAtributo().getId())
                             .setParameter("idOperacao", sr.getOperacao().getId()).getResultList().get(0);
                     String valor = tao.getCondicaoByValor(sr.getVlRegra());
-                    where += " AND " + sr.getAtributo().getNmAtributo() + " " + valor;
+                    where += " OR " + sr.getAtributo().getNmAtributo() + " " + valor;
                 }
             }
         }
         return where;
+    }
+
+    public SysRegraTabela findRegraByNmTabela(String nmTabela, SysConfiguracao configuracao) {
+        return em.createNamedQuery("SysRegraTabela.findByNmTabelaAndConfiguracao", SysRegraTabela.class)
+                .setParameter("nmTabela", nmTabela)
+                .setParameter("idConfiguracao", configuracao.getId())
+                .getResultList().get(0);
     }
 
 }
