@@ -24,18 +24,32 @@ public class ImportacaoController {
     protected SysConfiguracao configuracao;
     protected SimpleDateFormat sdf;
 
+    public ImportacaoController(EntityManager em) {
+        this.em = em;
+        this.sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+    }
+
     public ImportacaoController(EntityManager em, SysConfiguracao configuracao) {
         this.em = em;
         this.configuracao = configuracao;
         this.sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
     }
 
+    public void processarTodasImportacoes() {
+        List<SysConfiguracao> configuracaoList = em
+                .createNamedQuery("SysConfiguracao.findAll", SysConfiguracao.class).getResultList();
+        for (SysConfiguracao c : configuracaoList) {
+            configuracao = c;
+            processarImportacao();
+        }
+    }
+
     public void processarImportacao() {
         Date dtInicioImportacao = new Date();
-        System.out.println(sdf.format(dtInicioImportacao) + " #GPT - --------------- Início da Importação ---------------");
+        System.out.println(sdf.format(dtInicioImportacao) + " #GPT - --------------- Início da Importação: " + configuracao.getNmConfiguracao() + " ---------------");
         processarVwIndividuoGrupo(dtInicioImportacao);
         processarVwIndividuoAtividade(dtInicioImportacao);
-        System.out.println(sdf.format(new Date()) + " #GPT - --------------- Final da Importação ---------------");
+        System.out.println(sdf.format(new Date()) + " #GPT - --------------- Final da Importação " + configuracao.getNmConfiguracao() + " ---------------");
 
     }
 
