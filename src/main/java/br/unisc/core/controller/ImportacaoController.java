@@ -34,8 +34,8 @@ public class ImportacaoController {
         Date dtInicioImportacao = new Date();
         System.out.println(sdf.format(dtInicioImportacao) + " #GPT - --------------- Início da Importação ---------------");
         processarVwIndividuoGrupo(dtInicioImportacao);
-//        processarVwIndividuoAtividade(dtInicioImportacao);
-        System.out.println(sdf.format(dtInicioImportacao) + " #GPT - --------------- Final da Importação ---------------");
+        processarVwIndividuoAtividade(dtInicioImportacao);
+        System.out.println(sdf.format(new Date()) + " #GPT - --------------- Final da Importação ---------------");
 
     }
 
@@ -59,7 +59,7 @@ public class ImportacaoController {
                 //grupo
                 Grupo g = igc.aplicaTransformacaoGrupoByRegra(i.getGrupo(), regraGrupo);
                 g = igc.salvaGrupo(g, regraGrupo, configuracao);
-                
+
                 //individuo_grupo
                 GrupoIndividuo gi = igc.salvaGrupoIndividuo(i, g, regraGrupoIndividuo, configuracao);
                 if (totalProcessados % 100 == 0) {
@@ -91,8 +91,8 @@ public class ImportacaoController {
         for (VwIndividuoAtividadeDTO iaDTO : individuoAtividadeList) {
             try {
                 IndividuoAtividade iaConvertido = iaDTO.toIndividuoAtividade();
-                IndividuoAtividade ia = iac.salvaIndividuoAtividade(iaConvertido.getIndividuo(),
-                        iaConvertido.getDesafio(), regraIndividuoAtividade, configuracao);
+                iaConvertido = iac.aplicaTransformacaoByRegra(iaConvertido, regraIndividuoAtividade);
+                IndividuoAtividade ia = iac.salvaIndividuoAtividade(iaConvertido, regraIndividuoAtividade, configuracao);
 
                 if (totalProcessados % 100 == 0) {
                     System.out.println(sdf.format(new Date()) + " #GPT - individuo_atividade: " + totalProcessados + "/" + totalRegistros);

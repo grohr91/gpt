@@ -136,7 +136,7 @@ public class VwIndividuoAtividadeDTO {
         id.setVlAtingido(vlAtingido);
         id.setDtOcorrencia(dtOcorrencia);
         id.setDtPlanejado(dtPlanejado);
-        id.setVlPlanejado(vlPlanejado);
+        id.setSgPlanejado(sgPlanejado);
         id.setVlPlanejado(vlPlanejado);
         id.setFgAtivo(Boolean.TRUE);
         return id;

@@ -2,13 +2,13 @@ package br.unisc.core.controller;
 
 import br.unisc.core.dto.VwIndividuoAtividadeDTO;
 import br.unisc.core.model.Desafio;
-import br.unisc.core.model.GrupoIndividuo;
 import br.unisc.core.model.Individuo;
 import br.unisc.core.model.IndividuoAtividade;
 import br.unisc.web.model.SysConfiguracao;
 import br.unisc.web.model.SysRegra;
 import br.unisc.web.model.SysRegraTabela;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -39,52 +39,55 @@ public class VwIndividuoAtividadeDTOController {
             Query q = configuracao.getConn().getEm().createNativeQuery(""
                     + "SELECT DISTINCT * FROM vw_individuo_atividade "
                     + where
-                    + " ORDER BY id_individuo ", VwIndividuoAtividadeDTO.class);
+                    + " ORDER BY id_individuo", VwIndividuoAtividadeDTO.class);
             return q.getResultList();
         }
         return new ArrayList<VwIndividuoAtividadeDTO>();
     }
 
-    public IndividuoAtividade salvaIndividuoAtividade(Individuo individuo, Desafio desafio, SysRegraTabela regra, SysConfiguracao configuracao) {
-        IndividuoAtividade ia = null;
+    public IndividuoAtividade salvaIndividuoAtividade(IndividuoAtividade obj, SysRegraTabela regra, SysConfiguracao configuracao) {
         if (regra.getFgImportar()) {
             VwIndividuoGrupoDTOController igc = new VwIndividuoGrupoDTOController(em, configuracao);
-            individuo = igc.findIndividuoByIdExterno(individuo.getIdExterno());
-            desafio = igc.findDesafioByIdExterno(desafio.getIdExterno());
+            Individuo individuoBD = igc.findIndividuoByIdExterno(obj.getIndividuo().getIdExterno());
+            Desafio desafioBD = igc.findDesafioByIdExterno(obj.getDesafio().getIdExterno());
 
             //nao insere individuo nem desafios que nao estejam ja criados no BD
-            if (individuo == null || individuo.getId() == null
-                    || desafio == null || desafio.getId() == null) {
-                return ia;
+            if (individuoBD == null || individuoBD.getId() == null
+                    || desafioBD == null || desafioBD.getId() == null) {
+                return null;
+            }else {
+                obj.setDesafio(desafioBD);
+                obj.setIndividuo(individuoBD);
             }
 
-            ia = new IndividuoAtividade(individuo, desafio, true);
-            ia.setConfiguracao(configuracao);
-            IndividuoAtividade iaBD = findIndividuoAtividadeByIdsExternos(individuo, desafio);
+            obj.setDtUltimaSincronizacao(new Date());
+            obj.setFgAtivo(true);
+            obj.setConfiguracao(configuracao);
+            IndividuoAtividade iaBD = findIndividuoAtividadeByIdsExternos(individuoBD, desafioBD);
             if (iaBD != null) {
-                ia.setId(iaBD.getId());
+                obj.setId(iaBD.getId());
 
                 //remocao lógica
                 if (SysRegraTabela.SG_TIPO_REMOCAO_REGRA_REMOCAO == regra.getSgTipoRemocao()) {
-                    removerIndividuoAtividadeByRegra(ia, regra);
+                    removerIndividuoAtividadeByRegra(obj, regra);
                 }
             }
 
             //aplica regra de filtros configurados na tela da ferramenta
-            if (individuoAtividadeFiltrado(ia, regra, SysRegra.SG_TIPO_REGRA_FILTRO)) {
+            if (individuoAtividadeFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_FILTRO)) {
                 return null;
             }
 
             if (SysRegraTabela.SG_TIPO_INSERCAO_INSERIR_E_ALTERAR == regra.getSgTipoInsercao()) {
-                ia = em.merge(ia);
+                obj = em.merge(obj);
             } else if (SysRegraTabela.SG_TIPO_INSERCAO_APENAS_INSERIR == regra.getSgTipoInsercao()) {
                 if (iaBD == null) {
-                    em.persist(ia);
+                    em.persist(obj);
                 }
             }
             em.flush();
         }
-        return ia;
+        return obj;
     }
 
     public IndividuoAtividade findIndividuoAtividadeByIdsExternos(Individuo i, Desafio d) {
@@ -106,14 +109,11 @@ public class VwIndividuoAtividadeDTOController {
     }
 
     private boolean individuoAtividadeFiltrado(IndividuoAtividade obj, SysRegraTabela regra, int tipoRegra) {
-        boolean filtrado = true;
-        //se nenhuma regra definida, nao filtra
-        if (regra.getSysRegraList().isEmpty()) {
-            filtrado = false;
-        }
+        boolean filtrado = false;
         SysRegraController src = new SysRegraController(em);
         for (SysRegra sr : regra.getSysRegraList()) {
             if (tipoRegra == sr.getSgTipoRegra()) {
+                filtrado = true;
                 //se valor do atributo for igual ao definido no filtro, entao nao filtrado
                 String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
                 if (src.compareByRegra(valorAtributo, sr)) {
@@ -128,6 +128,20 @@ public class VwIndividuoAtividadeDTOController {
     private IndividuoAtividade removerIndividuoAtividadeByRegra(IndividuoAtividade obj, SysRegraTabela regra) {
         if (individuoAtividadeFiltrado(obj, regra, SysRegra.SG_TIPO_REGRA_REMOCAO)) {
             obj.setFgAtivo(false);
+        }
+        return obj;
+    }
+
+    public IndividuoAtividade aplicaTransformacaoByRegra(IndividuoAtividade obj, SysRegraTabela regraTabela) {
+        SysRegraController src = new SysRegraController(em);
+        for (SysRegra sr : regraTabela.getSysRegraList()) {
+            if (SysRegra.SG_TIPO_REGRA_TRANSFORMACAO == sr.getSgTipoRegra()) {
+                //se valor do atributo for igual ao definido na transformacao, entao seta valor
+                String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
+                if (src.compareByRegra(valorAtributo, sr)) {
+                    obj.setVal(sr.getAtributo().getNmAtributo(), sr.getVlRegraNovo());
+                }
+            }
         }
         return obj;
     }

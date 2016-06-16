@@ -81,7 +81,7 @@ public class SysRegraController {
 
     private boolean comparaData(String valorAtributo, String vlRegra, String nmOperacao) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date vlAttr = sdf.parse(valorAtributo);
             Date vlReg = sdf.parse(vlRegra);
 

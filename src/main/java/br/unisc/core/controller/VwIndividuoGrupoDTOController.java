@@ -230,14 +230,11 @@ public class VwIndividuoGrupoDTOController {
     }
 
     private boolean individuoFiltrado(Individuo obj, SysRegraTabela regra, int tipoRegra) {
-        boolean filtrado = true;
-        //se nenhuma regra definida, nao filtra
-        if (regra.getSysRegraList().isEmpty()) {
-            filtrado = false;
-        }
+        boolean filtrado = false;
         SysRegraController src = new SysRegraController(em);
         for (SysRegra sr : regra.getSysRegraList()) {
             if (tipoRegra == sr.getSgTipoRegra()) {
+                filtrado = true;
                 //se valor do atributo for igual ao definido no filtro, entao nao filtrado
                 String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
                 if (src.compareByRegra(valorAtributo, sr)) {

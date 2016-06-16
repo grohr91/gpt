@@ -1,6 +1,5 @@
 package br.unisc.web.dto;
 
-import br.unisc.util.DatabaseAware;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManager;
@@ -11,7 +10,7 @@ import javax.persistence.Persistence;
  *
  * @author m68663 - Guilherme Rohr
  */
-public class ConnectionDTO implements DatabaseAware {
+public class ConnectionDTO  {
 
     private EntityManager em;
 
@@ -158,11 +157,11 @@ public class ConnectionDTO implements DatabaseAware {
         properties.put("javax.persistence.jdbc.user", nmUser);
         properties.put("javax.persistence.jdbc.password", cdPass);
 
-        if (POSTGRESQL == dbType) {
+        if (1 == dbType) {
             properties.put("eclipselink.target-database", "PostgreSQL");
             properties.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
             properties.put("javax.persistence.jdbc.url", "jdbc:postgresql://" + nrIp + ":" + nrPort.toString() + "/" + nmDatabase);
-        } else if (MYSQL == dbType) {
+        } else if (2 == dbType) {
             properties.put("eclipselink.target-database", "MySQL");
             properties.put("javax.persistence.jdbc.driver", "com.mysql.jdbc.Driver");
             properties.put("javax.persistence.jdbc.url", "jdbc:mysql://" + nrIp + ":" + nrPort.toString() + "/" + nmDatabase);

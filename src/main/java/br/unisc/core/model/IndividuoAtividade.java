@@ -277,4 +277,43 @@ public class IndividuoAtividade implements Serializable {
 
         return "";
     }
+
+    public void setVal(String nmAtributo, String novoVal) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (StringUtils.isBlank(nmAtributo)) {
+                return;
+            } else if (nmAtributo.equals("dt_ocorrencia")) {
+                if (StringUtils.isBlank(novoVal) || "null".equals(novoVal)) {
+                    this.dtOcorrencia = null;
+                }
+                this.dtOcorrencia = sdf.parse(novoVal);
+            } else if (nmAtributo.equals("vl_atingido")) {
+                if (StringUtils.isBlank(novoVal) || "null".equals(novoVal)) {
+                    this.vlAtingido = null;
+                }
+                this.vlAtingido = Float.parseFloat(novoVal);
+            } else if (nmAtributo.equals("dt_atingido")) {
+                if (StringUtils.isBlank(novoVal) || "null".equals(novoVal)) {
+                    this.dtAtingido = null;
+                }
+                this.dtAtingido = sdf.parse(novoVal);
+            } else if (nmAtributo.equals("sg_atingido")) {
+                this.sgAtingido = novoVal;
+            } else if (nmAtributo.equals("vl_planejado")) {
+                if (StringUtils.isBlank(novoVal) || "null".equals(novoVal)) {
+                    this.vlPlanejado = null;
+                }
+                this.vlPlanejado = Float.parseFloat(novoVal);;
+            } else if (nmAtributo.equals("dt_planejado")) {
+                if (StringUtils.isBlank(novoVal) || "null".equals(novoVal)) {
+                    this.dtPlanejado = null;
+                }
+                this.dtPlanejado = sdf.parse(novoVal);
+            } else if (nmAtributo.equals("sg_planejado")) {
+                this.sgPlanejado = novoVal;
+            }
+        } catch (Exception ex) {
+        }
+    }
 }

@@ -127,39 +127,58 @@ public class SysRegraExtracao implements Serializable {
 
     public String getDsInfo() {
         if ("vw_individuo_grupo".equals(nmView)) {
-            return "CREATE OR REPLACE VIEW vw_individuo_grupo AS \n"
-                    + " SELECT t.id,\n"
+            return "CREATE OR REPLACE VIEW public.vw_individuo_grupo AS \n"
+                    + " SELECT row_number() OVER (ORDER BY t.id_individuo, t.id_grupo) AS id,\n"
                     + "    t.id_individuo,\n"
                     + "    t.nm_individuo,\n"
-                    + "    t.dt_nascimento,\n"
                     + "    t.id_grupo,\n"
                     + "    t.nm_grupo\n"
-                    + "   FROM ( "
-                    + " [SELECT PARA RETORNAR ESTES VALORES]"
-                    + ") t;";
+                    + "   FROM ( \n"
+                    + "	[SELECT PARA RETORNAR OS VALORES ACIMA]\n"
+                    + "   ) t\n"
+                    + "  GROUP BY t.id_individuo, t.nm_individuo, t.id_grupo, t.nm_grupo\n"
+                    + "  ORDER BY t.id_individuo, t.id_grupo;\n"
+                    + "\n"
+                    + "ALTER TABLE public.vw_individuo_grupo\n"
+                    + "  OWNER TO postgres;";
         } else if ("vw_individuo_atividade".equals(nmView)) {
-            return "CREATE OR REPLACE VIEW vw_individuo_atividade AS \n"
+            return "CREATE OR REPLACE VIEW public.vw_individuo_atividade AS \n"
                     + " SELECT t.id,\n"
+                    + "    t.id_desafio,\n"
                     + "    t.id_individuo,\n"
-                    + "    t.nm_individuo,\n"
-                    + "    t.dt_nascimento,\n"
-                    + "    t.id_grupo,\n"
-                    + "    t.nm_grupo\n"
-                    + "   FROM ( "
-                    + " [SELECT PARA RETORNAR ESTES VALORES]"
-                    + ") t;";
+                    + "    t.dt_ocorrencia,\n"
+                    + "    t.vl_atingido,\n"
+                    + "    t.vl_planejado,\n"
+                    + "    t.sg_atingido,\n"
+                    + "    t.sg_planejado,\n"
+                    + "    t.dt_atingido,\n"
+                    + "    t.dt_planejado\n"
+                    + "   FROM ( \n"
+                    + "	[SELECT PARA RETORNAR OS VALORES ACIMA]\n"
+                    + "   ) t\n"
+                    + "  GROUP BY t.id, t.id_desafio, t.id_individuo, t.dt_ocorrencia, t.vl_atingido, t.vl_planejado, t.sg_atingido, t.sg_planejado, t.dt_atingido, t.dt_planejado;\n"
+                    + "\n"
+                    + "ALTER TABLE public.vw_individuo_atividade\n"
+                    + "  OWNER TO postgres;";
         } else if ("vw_grupo_atividade".equals(nmView)) {
             return "CREATE OR REPLACE VIEW public.vw_grupo_atividade AS \n"
                     + " SELECT t.id,\n"
                     + "    t.id_desafio,\n"
-                    + "    t.nm_desafio,\n"
                     + "    t.id_grupo,\n"
+                    + "    t.dt_ocorrencia,\n"
                     + "    t.vl_atingido,\n"
+                    + "    t.vl_planejado,\n"
                     + "    t.sg_atingido,\n"
-                    + "    t.dt_atingido\n"
-                    + "   FROM (\n"
-                    + " [SELECT PARA RETORNAR ESTES VALORES]"
-                    + ") t;";
+                    + "    t.sg_planejado,\n"
+                    + "    t.dt_atingido,\n"
+                    + "    t.dt_planejado\n"
+                    + "   FROM ( \n"
+                    + "	[SELECT PARA RETORNAR OS VALORES ACIMA]\n"
+                    + "   ) t\n"
+                    + "  GROUP BY t.id, t.id_desafio, t.id_grupo, t.dt_ocorrencia, t.vl_atingido, t.vl_planejado, t.sg_atingido, t.sg_planejado, t.dt_atingido, t.dt_planejado;\n"
+                    + "\n"
+                    + "ALTER TABLE public.vw_individuo_atividade\n"
+                    + "  OWNER TO postgres;";
         }
         return "";
     }

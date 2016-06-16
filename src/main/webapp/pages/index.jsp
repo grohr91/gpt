@@ -295,11 +295,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="panel-footer" style="height: 55px;">
+<!--                                            <div class="panel-footer" style="height: 55px;">
                                                 <div class="col-sm-12 text-right">
                                                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras de Extração</button>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </s:form>
