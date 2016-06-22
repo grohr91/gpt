@@ -48,7 +48,7 @@
                                         <h4 class="panel-title">
                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseConfig" aria-expanded="true" aria-controls="collapseOne">
                                                 <label style='margin-bottom: 0px; padding-top: 8px; padding-bottom: 7px; cursor: pointer; width: 100%'>
-                                                    <span class="glyphicon glyphicon-cogs"></span> Configurações Gerais
+                                                    <span class="glyphicon glyphicon-cog"></span> Configurações Gerais
                                                 </label>
                                             </a>
                                         </h4>
@@ -295,11 +295,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-<!--                                            <div class="panel-footer" style="height: 55px;">
-                                                <div class="col-sm-12 text-right">
-                                                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras de Extração</button>
-                                                </div>
-                                            </div>-->
+                                            <!--                                            <div class="panel-footer" style="height: 55px;">
+                                                                                            <div class="col-sm-12 text-right">
+                                                                                                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> Salvar Regras de Extração</button>
+                                                                                            </div>
+                                                                                        </div>-->
                                         </div>
                                     </div>
                                 </s:form>
@@ -357,18 +357,50 @@
                                                                         <s:if test="tabela.nmTabela=='desafio'">
                                                                             <div class="col-sm-12">
                                                                                 <div class="panel panel-default">
+                                                                                    <div class="panel-body painel-desafios">
+                                                                                        <div class="painel-regras-titulo">
+                                                                                            Incluir desafios
+                                                                                        </div>
+                                                                                        <div class="row" style="padding-bottom: 12px; padding-top: 12px;">
+                                                                                            <s:iterator value="desafioList">
+                                                                                                <div class="col-sm-9">
+                                                                                                    <i class="glyphicon glyphicon-flash"></i> <strong><s:property value="nmDesafio"/></strong> - <s:property value="idExterno"/><br>
+                                                                                                </div>
+                                                                                                <div class="col-sm-3">
+                                                                                                    <a class="btn btn-xs btn-default" href="javascript:excluiDesafio(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
+                                                                                                </div>
+                                                                                            </s:iterator>
+
+                                                                                            <label class="col-sm-1 control-label" style="padding-top: 10px;" style="padding-top: 7px;">Nome</label>
+                                                                                            <div class="col-sm-2" style="padding-top: 7px;">
+                                                                                                <input type="text" class="form-control input-sm nm-desafio"/>
+                                                                                            </div>
+                                                                                            <label class="col-sm-3 control-label" style="padding-top: 10px;" style="padding-top: 7px;">Identificador</label>
+                                                                                            <div class="col-sm-2" style="padding-top: 7px;">
+                                                                                                <input type="text" class="form-control input-sm id-desafio" style="padding-top: 7px;"/>
+                                                                                            </div>
+                                                                                            <div class="col-sm-3 col-sm-offset-1" style="padding-top: 7px;">
+                                                                                                <a class="btn btn-sm btn-default" href="javascript:adicionarDesafio(<s:property value="id"/>);"><i class="glyphicon glyphicon-plus"></i> Adicionar Desafio</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-sm-12">
+                                                                                <div class="panel panel-default">
                                                                                     <div class="panel-body painel-regras">
                                                                                         <div class="painel-regras-titulo">
-                                                                                            Importar Desafios
+                                                                                            Regras de filtro
                                                                                         </div>
                                                                                         <div class="row">
                                                                                             <s:iterator value="sysRegraList" status="st1">
                                                                                                 <s:if test="sgTipoRegra == 1">
                                                                                                     <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                         <div class="col-md-9">
-                                                                                                            <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
-                                                                                                            <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
-                                                                                                            <strong>a/que/de</strong> <s:property value="vlRegra"/>
+                                                                                                            <i class="glyphicon glyphicon-asterisk"></i> <s:property value="atributo.nmAtributo"/> 
+                                                                                                            <strong>é</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                            &nbsp;<s:property value="vlRegra"/>
                                                                                                         </div>
                                                                                                         <div class="col-md-3">
                                                                                                             <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
@@ -415,8 +447,8 @@
                                                                                                         <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                             <div class="col-md-9">
                                                                                                                 <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
-                                                                                                                <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
-                                                                                                                <strong>a/que/de</strong> <s:property value="vlRegra"/>
+                                                                                                                <strong>é</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                                &nbsp;<s:property value="vlRegra"/>
                                                                                                             </div>
                                                                                                             <div class="col-md-3">
                                                                                                                 <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
@@ -449,9 +481,9 @@
                                                                                                         <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                             <div class="col-md-9">
                                                                                                                 <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
-                                                                                                                <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                                <strong>é</strong> <s:property value="operacao.nmOperacao"/> 
                                                                                                                 <strong>a/que/de</strong> <s:property value="vlRegra"/>
-                                                                                                                <strong>atribui-se</strong> <s:property value="vlRegraNovo"/>
+                                                                                                                &nbsp;<s:property value="vlRegraNovo"/>
                                                                                                             </div>
                                                                                                             <div class="col-md-2 col-md-offset-1">
                                                                                                                 <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>
@@ -483,8 +515,8 @@
                                                                                                     <div style="padding-bottom: 12px; padding-top: 12px;" class="div-regra" regra-id="<s:property value="id"/>">
                                                                                                         <div class="col-md-9">
                                                                                                             <i class="glyphicon glyphicon-asterisk"></i> <strong>Quando</strong> <s:property value="atributo.nmAtributo"/> 
-                                                                                                            <strong>for</strong> <s:property value="operacao.nmOperacao"/> 
-                                                                                                            <strong>a/que/de</strong> <s:property value="vlRegra"/>
+                                                                                                            <strong>é</strong> <s:property value="operacao.nmOperacao"/> 
+                                                                                                            &nbsp;<s:property value="vlRegra"/>
                                                                                                         </div>
                                                                                                         <div class="col-md-2 col-md-offset-1">
                                                                                                             <a class="btn btn-xs btn-default" href="javascript:excluiRegra(<s:property value="id"/>);"><i class="glyphicon glyphicon-trash"></i> Remover</a>

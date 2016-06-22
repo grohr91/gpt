@@ -36,7 +36,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Desafio.findById", query = "SELECT d FROM Desafio d WHERE d.id = :id"),
     @NamedQuery(name = "Desafio.findByIdExterno", query = "SELECT d FROM Desafio d WHERE d.idExterno = :idExterno"),
     @NamedQuery(name = "Desafio.findByNmDesafio", query = "SELECT d FROM Desafio d WHERE d.nmDesafio = :nmDesafio"),
-    @NamedQuery(name = "Desafio.findByDtUltimaSincronizacao", query = "SELECT d FROM Desafio d WHERE d.dtUltimaSincronizacao = :dtUltimaSincronizacao")})
+    @NamedQuery(name = "Desafio.findByDtUltimaSincronizacao", query = "SELECT d FROM Desafio d WHERE d.dtUltimaSincronizacao = :dtUltimaSincronizacao"),
+    @NamedQuery(name = "Desafio.findByIdConfiguracao", query = "SELECT d FROM Desafio d WHERE d.configuracao.id = :idConfiguracao")})
 public class Desafio implements Serializable {
 
     private static final long serialVersionUID = 1L;

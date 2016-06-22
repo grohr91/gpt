@@ -6,8 +6,10 @@
 package br.unisc.util;
 
 import br.unisc.core.controller.ImportacaoController;
+import br.unisc.web.model.SysConfiguracao;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.persistence.EntityManager;
@@ -22,41 +24,53 @@ import javax.servlet.ServletContextListener;
  */
 public class Automacao implements ServletContextListener {
 
-    public static final Integer DIA = 86400000; // 24 horas
+    public static final Integer SEMANA = 604800000; // 24 horas x 7 dias
+    EntityManager em;
 
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("GPT no ar!");
+
+//        try {
+//            EntityManagerFactory emf = Persistence.createEntityManagerFactory("PersistenceTccUnit");
+//            em = emf.createEntityManager();
+//            List<SysConfiguracao> configuracaoList = em.createNamedQuery("", SysConfiguracao.class).getResultList();
+//            
+//            
+//
+//            rodaTarefaDeImportacao(Calendar.SUNDAY, 0, 0);
+//        } catch (Exception ex) {
+//
+//        } finally {
+//            em.close();
+//        }
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("GPT: até mais");
     }
 
-    public void rodaTarefaDeImportacao() {
+    public void rodaTarefaDeImportacao(int dia, int hora, int minuto) {
+        Calendar dataInicio = new GregorianCalendar();
+        dataInicio.set(Calendar.DAY_OF_WEEK, dia);
+        dataInicio.set(Calendar.HOUR_OF_DAY, hora);
+        dataInicio.set(Calendar.MINUTE, minuto);
+        dataInicio.set(Calendar.SECOND, 00);
+
         Timer timer = new Timer();
-        Calendar startingTime = new GregorianCalendar();
-        startingTime.set(Calendar.HOUR_OF_DAY, 2);
-        startingTime.set(Calendar.MINUTE, 00);
-        startingTime.set(Calendar.SECOND, 00);
-
         timer.scheduleAtFixedRate(new TimerTask() {
-
             @Override
             public void run() {
                 importarConfiguracoes();
             }
-        }, startingTime.getTime(), DIA);
-
+        }, dataInicio.getTime(), SEMANA);
     }
 
     public void importarConfiguracoes() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("PersistenceTccUnit");
-        EntityManager em = emf.createEntityManager();
         try {
-//            em.getTransaction().begin();
-//            ImportacaoController importacaoController = new ImportacaoController(em);
-//            importacaoController.processarTodasImportacoes();
-//            em.getTransaction().commit();
+            em.getTransaction().begin();
+            ImportacaoController importacaoController = new ImportacaoController(em);
+            importacaoController.processarTodasImportacoes();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("Oops! Algo deu errado na importação");
@@ -64,7 +78,6 @@ public class Automacao implements ServletContextListener {
                 em.getTransaction().rollback();
             }
         }
-        em.close();
     }
 
 }

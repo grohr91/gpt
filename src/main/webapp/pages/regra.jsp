@@ -3,7 +3,7 @@
 
 <div class="form-group" style="margin-right: 0px; margin-left: 0px; padding-top: 20px;" tipo-regra="<s:property value="regra.sgTipoRegra"/>" tabela-id="<s:property value="tabela.id"/>" index-id="<s:property value="index"/>">
     <label class="col-md-1 control-label" style="padding-top: 3px;">Quando</label>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <s:select list="atributoList"
                   listKey="id"
                   listValue="nmAtributo"
@@ -13,12 +13,11 @@
                   />
     </div>
 
-    <label class="col-md-1 control-label" style="padding-top: 3px;">for</label>
+    <label class="col-md-1 control-label" style="padding-top: 3px;">é</label>
     <div class="col-md-2">
         <select class="form-control input-sm tipo-operacao"></select>
     </div>
 
-    <label class="col-md-1 control-label" style="padding-top: 3px;">a/de</label>
     <div class="col-md-2">
         <s:if test="tabela.nmTabela == 'desafio'">
             <s:select list="desafioList"

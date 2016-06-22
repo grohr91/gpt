@@ -76,6 +76,9 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
                         tabelaList.remove(srt.getTabela());
                     }
                 }
+                desafioList = em.createNamedQuery("Desafio.findByIdConfiguracao", Desafio.class)
+                        .setParameter("idConfiguracao", configuracao.getId())
+                        .getResultList();
             } else {
                 regraTabelaList = new ArrayList<SysRegraTabela>();
                 regraExtracaoList = new ArrayList<SysRegraExtracao>();
@@ -205,8 +208,8 @@ public class ConfigurationAction extends ActionSupport implements EMAware {
                     + "<div class=\"col-md-9\">\n"
                     + "<i class=\"glyphicon glyphicon-asterisk\"></i> "
                     + "<strong>Quando</strong> " + sa.getNmAtributo()
-                    + " <strong>for</strong> " + so.getNmOperacao()
-                    + " <strong>a/que/de</strong> " + regra.getVlRegra()
+                    + " <strong>é</strong> " + so.getNmOperacao()
+                    + " " + regra.getVlRegra()
                     + (SysRegra.SG_TIPO_REGRA_TRANSFORMACAO == regra.getSgTipoRegra()
                             ? " <strong>atribui-se</strong> " + regra.getVlRegraNovo() : "")
                     + "</div>"

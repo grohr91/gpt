@@ -64,6 +64,8 @@ public class ImportacaoController {
         List<VwIndividuoGrupoDTO> individuoGrupoList = igc.findVwIndividuoGrupoByRegra(regraIndividuo, regraGrupo, regraGrupoIndividuo);
         int totalRegistros = individuoGrupoList.size();
         int totalProcessados = 0;
+        System.out.println("     Total Registros selecionados de vwIndividuoGrupo: " + totalRegistros);
+
         for (VwIndividuoGrupoDTO ig : individuoGrupoList) {
             try {
                 //individuo

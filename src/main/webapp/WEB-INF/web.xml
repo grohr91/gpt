@@ -5,9 +5,9 @@
 <web-app>
     <display-name>TC2 - Guilherme Rohr</display-name>
   
-    <listener>
+<!--    <listener>
         <listener-class>br.com.util.Automacao</listener-class>
-    </listener>
+    </listener>-->
   
     <filter>
         <filter-name>struts2</filter-name>

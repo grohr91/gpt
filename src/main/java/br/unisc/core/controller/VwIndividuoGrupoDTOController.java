@@ -37,9 +37,14 @@ public class VwIndividuoGrupoDTOController {
             where += srtc.criaWhereByRegraTabela(regraGrupo, true);
             where += srtc.criaWhereByRegraTabela(regraGrupoIndividuo, true);
 
-            Query q = configuracao.getConn().getEm().createNativeQuery("SELECT DISTINCT * FROM vw_individuo_grupo "
-                    + where
-                    + "ORDER BY id_individuo ", VwIndividuoGrupoDTO.class);
+            Query q = configuracao.getConn().getEm().
+                    createNativeQuery("SELECT count(*) FROM vw_individuo_grupo ");
+            System.out.println("     Total Registros de vwIndividuoGrupo: " + q.getResultList().get(0));
+
+            q = configuracao.getConn().getEm().
+                    createNativeQuery("SELECT DISTINCT * FROM vw_individuo_grupo "
+                            + where
+                            + "ORDER BY id_individuo ", VwIndividuoGrupoDTO.class);
             return q.getResultList();
         }
         return new ArrayList<VwIndividuoGrupoDTO>();

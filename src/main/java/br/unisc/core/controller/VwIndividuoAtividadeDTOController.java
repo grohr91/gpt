@@ -55,7 +55,7 @@ public class VwIndividuoAtividadeDTOController {
             if (individuoBD == null || individuoBD.getId() == null
                     || desafioBD == null || desafioBD.getId() == null) {
                 return null;
-            }else {
+            } else {
                 obj.setDesafio(desafioBD);
                 obj.setIndividuo(individuoBD);
             }
@@ -113,11 +113,10 @@ public class VwIndividuoAtividadeDTOController {
         SysRegraController src = new SysRegraController(em);
         for (SysRegra sr : regra.getSysRegraList()) {
             if (tipoRegra == sr.getSgTipoRegra()) {
-                filtrado = true;
                 //se valor do atributo for igual ao definido no filtro, entao nao filtrado
                 String valorAtributo = obj.getVal(sr.getAtributo().getNmAtributo());
                 if (src.compareByRegra(valorAtributo, sr)) {
-                    filtrado = false;
+                    filtrado = true;
                     break;
                 }
             }
